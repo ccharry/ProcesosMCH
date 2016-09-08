@@ -1,0 +1,22 @@
+[
+    {
+    	"configuracionGeneral":"si",
+    	"protocolo":"http",
+    	"ipServidor":"192.168.2.5",
+    	"puerto":"8089",
+    	"proyecto":"ServiciosMCH",
+    	"servicioEnviarCorreo":"enviarCorreo",
+    	"servicioLeerCorreo":"lecturaCorreo",
+    	"servicioCargarArchivoExcel":"cargarArchivo",
+    	"servicioInvocarProcedimiento":"invocarProcedimiento"
+    },
+	{
+		"negocio":"sanRafael",
+		"dataBase":"SanRafael",
+		"parametrosServicio":[
+								{"correo":"pruebasnode@gmail.com"},
+								{"contrasena":"camiloBeltran123"}, 
+								{"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA"}
+							] 
+	}
+]
