@@ -26,12 +26,13 @@ public class UtilJwt {
 		return instancia;
 	}
 
-	public String generarToken(String DB){
+	public String generarToken(String empresa,Map<String,Object> parametros){
 		Calendar date = Calendar.getInstance();
 		long h= date.getTimeInMillis();
 		Date expiracion=new Date(h + (10 * 60000)); // 10 MINUTOS
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("dataBase", DB);
+		map.put("empresa", empresa);
+		map.putAll(parametros);
 		return Jwts.builder().signWith(SignatureAlgorithm.HS256,("ProcesosMCH".getBytes())).setClaims(map).setExpiration(expiracion).compact();
 	}
 }

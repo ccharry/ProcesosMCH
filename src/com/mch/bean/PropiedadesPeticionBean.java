@@ -1,12 +1,15 @@
 package com.mch.bean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.mch.utilidades.UtilJwt;
 import com.mch.utilidades.UtilLecturaPropiedades;
 
 
@@ -24,6 +27,9 @@ public class PropiedadesPeticionBean {
 	private String mapeoClase;
 	private List<String> parametros = new ArrayList<String>();
 	private UtilLecturaPropiedades lp = UtilLecturaPropiedades.getInstancia();
+	private String rutaDescarga;
+	private String dataBase;
+	private String negocio;
 	/**
 	 * Se asignana propiedades de acuerdo
 	 * a la configuración en el JSON.
@@ -37,13 +43,15 @@ public class PropiedadesPeticionBean {
 		IPServidor = (String)c.get("ipServidor");
 		puerto     = (String)c.getString("puerto");
 		mapeoClase = (String)c.get("servicioLeerCorreo");
-		JSONArray a = o.getJSONArray("parametrosServicio");
-		for(int i = 0 ; i < a.length() ; i ++){
-			JSONObject temp = a.getJSONObject(i);
-			Iterator<String> k = temp.keys();
-			while(k.hasNext())
-				parametros.add(temp.getString(k.next()));
-		}
+		rutaDescarga = o.getString("rutaDescarga");
+		dataBase = o.getString("dataBase");
+		this.negocio = negocio;
+//		for(int i = 0 ; i < a.length() ; i ++){
+//			JSONObject temp = a.getJSONObject(i);
+//			Iterator<String> k = temp.keys();
+//			while(k.hasNext())
+//				parametros.add(temp.getString(k.next()));
+//		}
 			
 	}
 	
@@ -53,6 +61,8 @@ public class PropiedadesPeticionBean {
 	 * @return String con la cadena para realizar la petición
 	 */
 	public String generarRutaPeticion(){
+		Map<String,Object> params = new HashMap<String, Object>();
+
 		StringBuilder r = new StringBuilder();
 		r.append(protocolo)
 		.append("://")
@@ -65,8 +75,13 @@ public class PropiedadesPeticionBean {
 		.append(packageServicios)
 		.append("/")
 		.append(mapeoClase);
-		for(String a : parametros)
-			r.append("/"+a);
+//		for(String a : parametros)
+//			r.append("/"+a);
+		
+		params.put("rutaDescarga", rutaDescarga);
+		params.put("negocio", this.negocio);
+		String token = UtilJwt.getInstancia().generarToken(dataBase,params);
+		r.append(token);
 		return r.toString();
 	}
 	

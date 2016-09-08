@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
@@ -73,16 +74,19 @@ public class TareaEnviarArchivoRest {
 	 * @return
 	 * @throws Exception
 	 */
-	public String generarRutaPeticion(String servicio, String negocio) throws Exception{
-		JSONObject c = UtilLecturaPropiedades.getInstancia().getPropJson("configuracionGeneral","si"),
-				   db = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", negocio);
-		String token = UtilJwt.getInstancia().generarToken(db.getString("dataBase"));
+	public String generarRutaPeticion(String servicio, String negocio, Map<String,Object> parametros) throws Exception{
+		JSONObject c = UtilLecturaPropiedades.getInstancia().getPropJson("configuracionGeneral","si");
+		JSONObject empresa = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", negocio);
+		
+		
+		String token = UtilJwt.getInstancia().generarToken(empresa.getString("negocio"),parametros);
 		
 		String ipServidor  = (String)c.get("ipServidor"),
 				puerto     = (String)c.getString("puerto"),
 				mapeoClase = (String)c.get(servicio),
 				proyecto   = (String)c.get("proyecto"),
 				protocolo  = (String)c.get("protocolo");
+		System.out.println(protocolo+"://"+ipServidor+":"+puerto+"/"+proyecto+"/rest/"+mapeoClase+"/"+token);
 		return protocolo+"://"+ipServidor+":"+puerto+"/"+proyecto+"/rest/"+mapeoClase+"/"+token;
 	}
 

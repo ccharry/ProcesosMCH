@@ -11,12 +11,8 @@
     	"servicioInvocarProcedimiento":"invocarProcedimiento"
     },
 	{
-		"negocio":"sanRafael",
+		"negocio":"SanRafael",
 		"dataBase":"SanRafael",
-		"parametrosServicio":[
-								{"correo":"pruebasnode@gmail.com"},
-								{"contrasena":"camiloBeltran123"}, 
-								{"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA"}
-							] 
+		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA"
 	}
 ]
