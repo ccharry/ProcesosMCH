@@ -15,7 +15,7 @@ public class ProcesoSanRafael implements Job{
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			JSONObject p = new TareaPeticion().GET(new PropiedadesPeticionBean("sanRafael").generarRutaPeticion());
+			JSONObject p = new TareaPeticion().GET(new PropiedadesPeticionBean("SanRafael").generarRutaPeticion());
 			System.out.println(p);
 		} catch (Exception e) {
 			e.printStackTrace();

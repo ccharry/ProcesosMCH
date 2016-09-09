@@ -14,5 +14,10 @@
 		"negocio":"SanRafael",
 		"dataBase":"SanRafael",
 		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA"
+	},
+	{
+		"negocio":"san",
+		"dataBase":"SanRafael",
+		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA"
 	}
 ]

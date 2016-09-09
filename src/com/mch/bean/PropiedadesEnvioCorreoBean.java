@@ -8,30 +8,11 @@ import java.util.List;
  */
 public class PropiedadesEnvioCorreoBean {
 
-	
-	
-	private List<String> destinatarios = null;
 	private String destinatario = null;
 	private String asunto = null;
 	private String mensaje = null;
 	private List<ArchivoBean>archivos = null;
 
-	
-
-	/**
-	 * Cuando se quiere enviar un correo a 
-	 * más de un destinaratio se modifica
-	 * este atributo.
-	 * <h2>¡No hay que modificar los atributos que no va a usar!</h2>
-	 * <br>
-	 * @param destinatarios
-	 * @return this
-	 */
-	public PropiedadesEnvioCorreoBean setDestinatarios(List<String> destinatarios) {
-		this.destinatarios = destinatarios;
-		return this;
-	}
-	
 	/**
 	 * Cuando se quiere enviar un correo a
 	 * un solo destinatario se modifica
@@ -45,12 +26,12 @@ public class PropiedadesEnvioCorreoBean {
 		this.destinatario = destinatario;
 		return this;
 	}
-	
+
 	public PropiedadesEnvioCorreoBean setAsunto(String asunto) {
 		this.asunto = asunto;
 		return this;
 	}
-	
+
 	/**
 	 * Se puede enviar un mensaje en formato HTML
 	 * o simplemente un texto.
@@ -63,7 +44,7 @@ public class PropiedadesEnvioCorreoBean {
 		this.mensaje = mensaje;
 		return this;
 	}
-	
+
 	/**
 	 * Si el necesita enviar un correo con
 	 * varios archivos adjuntos, hay que 
@@ -78,10 +59,7 @@ public class PropiedadesEnvioCorreoBean {
 		this.archivos = archivos;
 		return this;
 	}
-	
-	public List<String> getDestinatarios() {
-		return destinatarios;
-	}
+
 	public String getDestinatario() {
 		return destinatario;
 	}
