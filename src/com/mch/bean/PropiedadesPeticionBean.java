@@ -67,7 +67,8 @@ public class PropiedadesPeticionBean {
 		.append("/")
 		.append(packageServicios)
 		.append("/")
-		.append(mapeoClase);
+		.append(mapeoClase)
+		.append("/");
 //		for(String a : parametros)
 //			r.append("/"+a);
 		

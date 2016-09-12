@@ -67,7 +67,6 @@ public class TareaGeneradorZip {
 	public String crearZipPorRuta1( String ruta, String reporte, long t, String pass) throws ZipException, InterruptedException, IOException{
 
 		String rutaTemp = ruta+"/"+reporte+"_"+t+".zip"; 
-		System.out.println("ENTRO A GENERAR ZIP --- "+rutaTemp);
 		ZipFile zipFile = new ZipFile(rutaTemp);
 		ArrayList<File> archivos = new ArrayList<File>();
 

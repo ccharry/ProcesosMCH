@@ -1,7 +1,5 @@
 package com.mch.procesos;
 
-import java.io.File;
-
 import org.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -24,10 +22,8 @@ public class ProcesoSanRafael implements Job{
 	}
 	public static void main(String[] args) {
 		try {
-//			JSONObject p = new UtilPeticion().GET(new PropiedadesPeticionBean("sanRafael").generarRutaPeticion());
-//			System.out.println(p);
-			File f = new File("\\\\192.168.2.5\\c$\\RECAUDOS_BRINKS_EXCEL_MARZO_2016.xlsx");
-			System.out.println(f.isFile());
+			JSONObject p = new TareaPeticion().GET(new PropiedadesPeticionBean("SanRafael").generarRutaPeticion());
+			System.out.println(p);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperRunManager;
@@ -33,7 +34,7 @@ public class TareaGenerarReportePDF {
 	 * @throws JRException
 	 * @throws IOException
 	 */
-	public String generarPDF(String nombreReporte, long time) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
+	public String generarPDF(String nombreReporte, long time, Map<String, Object>parametros) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
 		String ruta = UtilMCH.getRutaProyecto().replace("bin/", "");
 		ruta = ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jasper";
 		File file = new File(ruta);
@@ -41,7 +42,7 @@ public class TareaGenerarReportePDF {
 			throw new ExcepcionMch("No se encontro el reporte "+nombreReporte+", recuerde que el nombre de la carpeta debe ser igual al nombre del reporte.");
 		}
 		Connection connection = PoolInstanciasConexion.getInstancia().getConexionLibre("SanRafael").getCon();
-		byte[] bytes =  JasperRunManager.runReportToPdf(ruta, new HashMap<String, Object>(), connection);
+		byte[] bytes =  JasperRunManager.runReportToPdf(ruta, parametros, connection);
 		InputStream in = new ByteArrayInputStream(bytes);
 		ruta = UtilMCH.escribirArchivoTemporalDesdeInputStream(nombreReporte+".pdf", in, "temporales", true, time);
 		ruta =  ruta.replace(nombreReporte+".pdf","");
@@ -49,7 +50,9 @@ public class TareaGenerarReportePDF {
 	}
 	
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, JRException, ExcepcionMch, IOException {
-		String a = new TareaGenerarReportePDF().generarPDF("facturaSanRafael",System.currentTimeMillis());
+		Map<String, Object> p = new HashMap<String, Object> ();
+		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
+		String a = new TareaGenerarReportePDF().generarPDF("facturaSanRafael", System.currentTimeMillis(), p);
 		System.out.println(a);
 	}
 }
