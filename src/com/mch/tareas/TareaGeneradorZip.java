@@ -29,23 +29,18 @@ public class TareaGeneradorZip {
 	 * @param ruta
 	 * @param liquidacion
 	 * @param empresa
+	 * @param pass
 	 * @throws ZipException
 	 * @throws InterruptedException 
 	 * @throws IOException 
 	 */
-	public InputStream crearZipPorRuta( String ruta, String liquidacion, String empresa) throws ZipException, InterruptedException, IOException{
-		String rutaTemp = ruta+"/"+liquidacion+".zip"; 
-		File archivo = new File(rutaTemp);
+	public InputStream crearZipPorRuta( String ruta, String reporte, long t, String pass) throws ZipException, InterruptedException, IOException{
 
-		while(archivo.isFile()){
-			rutaTemp = ruta+"/"+liquidacion+(int)(Math.random()*25+1)+".zip";
-			archivo = new File(rutaTemp);
-		}
+		System.out.println("ENTRO A GENERAR ZIP --- "+ruta);
 
+		String rutaTemp = ruta+"/"+reporte+t+".zip"; 
 		ZipFile zipFile = new ZipFile(rutaTemp);
-
 		ArrayList<File> archivos = new ArrayList<File>();
-
 
 		ZipParameters parameters = new ZipParameters();
 		parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
@@ -53,21 +48,44 @@ public class TareaGeneradorZip {
 		parameters.setEncryptFiles(true);
 		parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
 		parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
-		parameters.setPassword(empresa);
-
+		parameters.setPassword(pass);
 
 		for(File a : new File(ruta).listFiles()){
 			archivos.add(a);
 		}
 
 		zipFile.addFiles(archivos, parameters);
-
 		InputStream inputTemp = new FileInputStream(new File(rutaTemp));
 		byte[] aa = IOUtils.toByteArray(inputTemp);
 
 		inputTemp.close();
 
 		return new ByteArrayInputStream(aa);
+	}
+
+
+	public String crearZipPorRuta1( String ruta, String reporte, long t, String pass) throws ZipException, InterruptedException, IOException{
+
+		String rutaTemp = ruta+"/"+reporte+"_"+t+".zip"; 
+		System.out.println("ENTRO A GENERAR ZIP --- "+rutaTemp);
+		ZipFile zipFile = new ZipFile(rutaTemp);
+		ArrayList<File> archivos = new ArrayList<File>();
+
+		ZipParameters parameters = new ZipParameters();
+		parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+		parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL); 
+		parameters.setEncryptFiles(true);
+		parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
+		parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+		parameters.setPassword(pass);
+
+		for(File a : new File(ruta).listFiles()){
+			if(!a.getName().contains(".zip")){
+				archivos.add(a);
+			}
+		}
+		zipFile.addFiles(archivos, parameters);
+		return rutaTemp;
 	}
 
 

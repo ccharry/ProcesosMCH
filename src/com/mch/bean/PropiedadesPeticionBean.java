@@ -1,14 +1,8 @@
 package com.mch.bean;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
-
 import com.mch.utilidades.UtilJwt;
 import com.mch.utilidades.UtilLecturaPropiedades;
 
@@ -25,7 +19,6 @@ public class PropiedadesPeticionBean {
 	private String proyecto 	    = "ServiciosMCH";
 	private String packageServicios = "rest";
 	private String mapeoClase;
-	private List<String> parametros = new ArrayList<String>();
 	private UtilLecturaPropiedades lp = UtilLecturaPropiedades.getInstancia();
 	private String rutaDescarga;
 	private String dataBase;
@@ -109,10 +102,6 @@ public class PropiedadesPeticionBean {
 		this.mapeoClase = mapeoClase;
 		return this;
 	}
-	public PropiedadesPeticionBean setParametros(List<String> parametros) {
-		this.parametros = parametros;
-		return this;
-	} 
 	public static void main(String[] args) throws Exception {
 		String a = new PropiedadesPeticionBean("sanRafael").generarRutaPeticion();
 		System.out.println(a);
