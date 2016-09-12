@@ -15,7 +15,7 @@ import com.mch.utilidades.UtilLecturaPropiedades;
  * @author Camilo
  * 01/09/2016
  */
-public class PropiedadesPeticionBean {
+public class PropiedadesPeticion {
 	
 	private String protocolo 		= "http";
 	private String IPServidor;
@@ -34,7 +34,7 @@ public class PropiedadesPeticionBean {
 	 * @throws IOException 
 	 * @throws JSONException 
 	 */
-	public PropiedadesPeticionBean(String negocio) throws JSONException, IOException  {
+	public PropiedadesPeticion(String negocio) throws JSONException, IOException  {
 		JSONObject o = lp.getPropJson("negocio",negocio),
 				   c = lp.getPropJson("configuracionGeneral","si");
 		
@@ -84,32 +84,32 @@ public class PropiedadesPeticionBean {
 		return r.toString();
 	}
 	
-	public PropiedadesPeticionBean setProtocolo(String protocolo) {
+	public PropiedadesPeticion setProtocolo(String protocolo) {
 		this.protocolo = protocolo;
 		return this;
 	}
-	public PropiedadesPeticionBean setDireccion(String direccion) {
+	public PropiedadesPeticion setDireccion(String direccion) {
 		this.IPServidor = direccion;
 		return this;
 	}
-	public PropiedadesPeticionBean setPuerto(String puerto) {
+	public PropiedadesPeticion setPuerto(String puerto) {
 		this.puerto = puerto;
 		return this;
 	}
-	public PropiedadesPeticionBean setProyecto(String proyecto) {
+	public PropiedadesPeticion setProyecto(String proyecto) {
 		this.proyecto = proyecto;
 		return this;
 	}
-	public PropiedadesPeticionBean setPackageServicios(String packageServicios) {
+	public PropiedadesPeticion setPackageServicios(String packageServicios) {
 		this.packageServicios = packageServicios;
 		return this;
 	}
-	public PropiedadesPeticionBean setMapeoClase(String mapeoClase) {
+	public PropiedadesPeticion setMapeoClase(String mapeoClase) {
 		this.mapeoClase = mapeoClase;
 		return this;
 	}
 	public static void main(String[] args) throws Exception {
-		String a = new PropiedadesPeticionBean("sanRafael").generarRutaPeticion();
+		String a = new PropiedadesPeticion("sanRafael").generarRutaPeticion();
 		System.out.println(a);
 	}
 }

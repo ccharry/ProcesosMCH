@@ -1,34 +1,88 @@
 package com.mch.propiedades.servicios;
+
+import java.util.List;
+
+import com.mch.bean.ArchivoBean;
+
 /**
  * @author Camilo
- * 12/09/2016
+ * 05/09/2016
  */
 public class PropiedadServicioEnviarCorreo {
+
+	private String destinatario = null;
+	private String asunto = null;
+	private String mensaje = null;
+	private String negocio = null; 
+	private List<ArchivoBean>archivos = null;
 	
-	private String asunto;
-	private String mensaje;
-	private String destinatarios;
-	
-	
+	/**
+	 * Cuando se quiere enviar un correo a
+	 * un solo destinatario se modifica
+	 * este atributo.
+	 * <h2>¡No hay que modificar los atributos que no va a usar!</h2>
+	 * <br>
+	 * @param destinatario
+	 * @return this
+	 */
+	public PropiedadServicioEnviarCorreo setDestinatario(String destinatario) {
+		this.destinatario = destinatario;
+		return this;
+	}
+
+	public PropiedadServicioEnviarCorreo setAsunto(String asunto) {
+		this.asunto = asunto;
+		return this;
+	}
+
+	/**
+	 * Se puede enviar un mensaje en formato HTML
+	 * o simplemente un texto.
+	 * <h2>¡No hay que modificar los atributos que no va a usar!</h2>
+	 * <br>
+	 * @param mensaje
+	 * @return this
+	 */
+	public PropiedadServicioEnviarCorreo setMensaje(String mensaje) {
+		this.mensaje = mensaje;
+		return this;
+	}
+
+	/**
+	 * Si el necesita enviar un correo con
+	 * varios archivos adjuntos, hay que 
+	 * modificar este atributo con un List
+	 * de tipo InputStream.
+	 * <h2>¡No hay que modificar los atributos que no va a usar!</h2>
+	 * <br> 
+	 * @param archivos
+	 * @return
+	 */
+	public PropiedadServicioEnviarCorreo setArchivos(List<ArchivoBean> archivos) {
+		this.archivos = archivos;
+		return this;
+	}
+
+	public String getDestinatario() {
+		return destinatario;
+	}
 	public String getAsunto() {
 		return asunto;
-	}
-	public void setAsunto(String asunto) {
-		this.asunto = asunto;
 	}
 	public String getMensaje() {
 		return mensaje;
 	}
-	public void setMensaje(String mensaje) {
-		this.mensaje = mensaje;
+
+	public List<ArchivoBean> getArchivos() {
+		return archivos;
 	}
-	public String getDestinatarios() {
-		return destinatarios;
+
+	public String getNegocio() {
+		return negocio;
 	}
-	public void setDestinatarios(String destinatarios) {
-		this.destinatarios = destinatarios;
+
+	public void setNegocio(String negocio) {
+		this.negocio = negocio;
 	}
-	
-	
 	
 }

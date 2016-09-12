@@ -46,9 +46,10 @@ public class TareaPeticion {
 	 * Metodo que envia una petición POST
 	 * @param request
 	 * @return String
-	 * @throws Exception
+	 * @throws IOException 
+	 * @throws ExcepcionMch 
 	 */
-	public String POST(String request) throws Exception{
+	public String POST(String request) throws IOException, ExcepcionMch {
 		Logger.getLogger(getClass().getName()).log(Level.INFO,"=>Entró a enviar petición POST, URL : "+request);
 		StringBuffer response = new StringBuffer();
 		URL obj = null;

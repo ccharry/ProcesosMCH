@@ -12,7 +12,7 @@ import org.json.JSONException;
 
 import com.mch.bean.ArchivoBean;
 import com.mch.excepciones.ExcepcionMch;
-import com.mch.propiedades.servicios.PropiedadesEnvioCorreoBean;
+import com.mch.propiedades.servicios.PropiedadServicioEnviarCorreo;
 import com.mch.tareas.TareaEnviarArchivoRest;
 import com.mch.utilidades.UtilMCH;
 
@@ -33,7 +33,7 @@ public class ActividadEnviarCorreo extends TareaEnviarArchivoRest{
 	 * @throws JSONException 
 	 * @throws MessagingException 
 	 */
-	public String enviarEmail(PropiedadesEnvioCorreoBean prop, String negocio) throws ExcepcionMch, IllegalArgumentException, IllegalAccessException, JSONException, IOException, MessagingException {
+	public String enviarEmail(PropiedadServicioEnviarCorreo prop) throws ExcepcionMch, IllegalArgumentException, IllegalAccessException, JSONException, IOException, MessagingException {
 
 		if (prop.getAsunto().trim().equals("")){
 			throw new ExcepcionMch("No se encontró el asunto");
@@ -51,7 +51,7 @@ public class ActividadEnviarCorreo extends TareaEnviarArchivoRest{
 	}
 
 	public static void main(String[] args) throws Throwable {
-		PropiedadesEnvioCorreoBean a = new PropiedadesEnvioCorreoBean();
+		PropiedadServicioEnviarCorreo a = new PropiedadServicioEnviarCorreo();
 		List<ArchivoBean>archivos = new ArrayList<ArchivoBean>();
 		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/0-convenciones_codigo_java.pdf")));
 		//		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/03163695394 RECAUDO JUNIO 2016.csv")));
@@ -60,7 +60,7 @@ public class ActividadEnviarCorreo extends TareaEnviarArchivoRest{
 		.setMensaje("<h1>PRUEBA2</h1><p>Hola como está...........asdfasdf...................., esto es uns PRUEBA desde Java</p><br><h2 style='background:red'>prueba STYLE</h2>")
 		.setArchivos(archivos);
 		//				.setArchivo(new ArchivoBean("1Liq Rec Emfermeria Abril - PRUEBA.xlsx",new File("E:/ARCHIVOBASE/1Liq Rec Emfermeria Abril - PRUEBA.xlsx")));
-		String r = new ActividadEnviarCorreo().enviarEmail(a,"san");
+		String r = new ActividadEnviarCorreo().enviarEmail(a);
 		System.out.println(r);
 	}
 }

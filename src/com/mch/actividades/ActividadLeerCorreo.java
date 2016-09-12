@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.mch.propiedades.servicios.PropiedadesPeticionBean;
+import com.mch.propiedades.servicios.PropiedadesPeticion;
 import com.mch.tareas.TareaPeticion;
 
 /**
@@ -29,6 +29,6 @@ public class ActividadLeerCorreo {
 	 * @throws Exception
 	 */
 	public JSONObject leerCorreo(String negocio) throws JSONException, IOException {
-		return new TareaPeticion().GET(new PropiedadesPeticionBean(negocio).generarRutaPeticion());
+		return new TareaPeticion().GET(new PropiedadesPeticion(negocio).generarRutaPeticion());
 	}
 }
