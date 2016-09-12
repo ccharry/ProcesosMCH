@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -12,7 +14,7 @@ import java.io.OutputStream;
  * 05/09/2016
  */
 public class UtilMCH {
-	
+
 	private static String ruta = null;
 
 	public static String getRutaProyecto() {
@@ -24,34 +26,36 @@ public class UtilMCH {
 		}
 		return ruta;
 	}
-	
+
 	/**
 	 * Metodo que escribe un archivo dependiendo 
-	 * de un objeto inputStream
+	 * de un objeto InputStream
 	 * @param nombreArchivo
 	 * @param in
 	 * @return String, ruta del archivo en disco
 	 */
-	public static String escribirArchivoTemporalDesdeInputStream(String nombreArchivo, InputStream in, String carptaTemp, boolean replaceBin){
-		File f = null;
-		try{
-			String ruta = UtilMCH.getRutaProyecto()+"/"+carptaTemp+"/"+nombreArchivo;
-			if(replaceBin == true)
-				ruta = ruta.replace("bin/", "");
-			f=new File(ruta);
-			System.out.println(UtilMCH.getRutaProyecto()+"/"+carptaTemp+"/"+nombreArchivo+" -----");
-			OutputStream salida=new FileOutputStream(f);
-			byte[] buf =new byte[1024];
-			int len;
-			while((len=in.read(buf))>0){
-				salida.write(buf,0,len);
-			}
-			salida.close();
-			in.close();
-			System.out.println("Se realizo la conversion con exito");
-		}catch(IOException e){
-			System.out.println("Se produjo el error : "+e.toString());
+	public static String escribirArchivoTemporalDesdeInputStream(String nombreArchivo, InputStream in, String carptaTemp, boolean replaceBin, long time) throws IOException{
+		File f = null, ft = null;
+		String ruta = UtilMCH.getRutaProyecto()+"/"+carptaTemp+"/temporal_"+time+"/"+nombreArchivo,
+				rutaTemp = UtilMCH.getRutaProyecto()+"/"+carptaTemp+"/temporal_"+time;
+		if(replaceBin == true){
+			ruta = ruta.replace("bin/", "");
+			rutaTemp = rutaTemp.replace("bin/", "");
 		}
+		ft = new File(rutaTemp);
+		ft.mkdir();
+
+		f = new File(ruta);
+
+		OutputStream salida=new FileOutputStream(f);
+		byte[] buf =new byte[1024];
+		int len;
+		while((len=in.read(buf))>0){
+			salida.write(buf,0,len);
+		}
+		salida.close();
+		in.close();
+		Logger.getLogger(UtilMCH.class.getName()).log(Level.INFO,"Se realizo la conversion con exito");
 		return f.toPath().toString();
 	}
 }
