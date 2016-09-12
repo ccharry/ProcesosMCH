@@ -23,9 +23,10 @@ public class ActividadCargarArchivo extends TareaEnviarArchivoRest{
 	 * @param tabla
 	 * @throws Exception
 	 */
-	public String cargarArchivoABaseDatos(File file, String tabla, String negocio) throws Exception{
+	public String cargarArchivoABaseDatos(File file, String tabla, String negocio,String dataBase) throws Exception{
 		Map<String,Object> parametros = new HashMap<String, Object>();
 		parametros.put("tabla", tabla);
+		parametros.put("dataBase", dataBase);
 		List<ArchivoBean> f = new ArrayList<ArchivoBean>();
 		f.add(new ArchivoBean(file));
 		String URL = generarRutaPeticion("servicioCargarArchivoExcel",negocio,parametros);
@@ -52,7 +53,7 @@ public class ActividadCargarArchivo extends TareaEnviarArchivoRest{
 	}
 	
 	public static void main(String[] args) throws Exception {
-		String a = new ActividadCargarArchivo().cargarArchivoABaseDatos(new File("E:/ARCHIVOS/FACTURACION  AGOSTO  2016 (1).xlsx"), "TEMP_FACTURAS","sanRafael");
+		String a = new ActividadCargarArchivo().cargarArchivoABaseDatos(new File("C:\\Users\\Admin\\Desktop\\TEMP/FACTURACION  AGOSTO  2016 (1).xlsx"), "FACTURAS_TEMP","SanRafael","SanRafael");
 		System.out.println(a);
 	}
 }
