@@ -1,6 +1,7 @@
 package com.mch.tareas;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -24,9 +25,10 @@ public class TareaPeticion {
 	/**
 	 * Metodo que envía una petición GET
 	 * @param request
+	 * @throws IOException 
 	 * @throws Exception
 	 */
-	public JSONObject GET(String request) throws Exception{
+	public JSONObject GET(String request) throws IOException {
 		BufferedReader rd = null;
 		try {
 			request = request.replace("\\", "*");

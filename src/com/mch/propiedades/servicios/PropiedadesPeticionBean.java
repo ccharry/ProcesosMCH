@@ -1,8 +1,12 @@
-package com.mch.bean;
+package com.mch.propiedades.servicios;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.json.JSONException;
 import org.json.JSONObject;
+
 import com.mch.utilidades.UtilJwt;
 import com.mch.utilidades.UtilLecturaPropiedades;
 
@@ -27,9 +31,10 @@ public class PropiedadesPeticionBean {
 	 * Se asignana propiedades de acuerdo
 	 * a la configuración en el JSON.
 	 * @param negocio
-	 * @throws Exception
+	 * @throws IOException 
+	 * @throws JSONException 
 	 */
-	public PropiedadesPeticionBean(String negocio) throws Exception{
+	public PropiedadesPeticionBean(String negocio) throws JSONException, IOException  {
 		JSONObject o = lp.getPropJson("negocio",negocio),
 				   c = lp.getPropJson("configuracionGeneral","si");
 		

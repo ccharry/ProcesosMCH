@@ -1,14 +1,20 @@
 package com.mch.actividades;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
+import org.json.JSONException;
+
 import com.mch.bean.ArchivoBean;
-import com.mch.bean.PropiedadesEnvioCorreoBean;
+import com.mch.excepciones.ExcepcionMch;
+import com.mch.propiedades.servicios.PropiedadesEnvioCorreoBean;
 import com.mch.tareas.TareaEnviarArchivoRest;
+import com.mch.utilidades.UtilMCH;
 
 /**
  * @author Camilo
@@ -20,24 +26,27 @@ public class ActividadEnviarCorreo extends TareaEnviarArchivoRest{
 	 * 
 	 * @param prop
 	 * @return String en formato JSON
-	 * @throws Throwable 
+	 * @throws ExcepcionMch 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 * @throws IOException 
+	 * @throws JSONException 
+	 * @throws MessagingException 
 	 */
-	public String enviarEmail(PropiedadesEnvioCorreoBean prop, String negocio) throws Throwable{
-		Map<String,Object> parametros = new HashMap<String, Object>();
-		
+	public String enviarEmail(PropiedadesEnvioCorreoBean prop, String negocio) throws ExcepcionMch, IllegalArgumentException, IllegalAccessException, JSONException, IOException, MessagingException {
+
 		if (prop.getAsunto().trim().equals("")){
-			throw new Exception("No se encontró el asunto");
+			throw new ExcepcionMch("No se encontró el asunto");
 		}
 		if (prop.getMensaje().trim().equals("")){
-			throw new Exception("No se encontró el mensaje");
+			throw new ExcepcionMch("No se encontró el mensaje");
 		}
 		if (prop.getDestinatario().trim().equals("")){
-			throw new Exception("No se encontraron destinatarios");
+			throw new ExcepcionMch("No se encontraron destinatarios");
 		}
-		parametros.put("asunto", prop.getAsunto());
-		parametros.put("mensaje", prop.getMensaje());
-		parametros.put("destinatario", prop.getDestinatario());
-		String s = generarRutaPeticion("servicioEnviarCorreo", negocio, parametros);
+
+		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(prop);
+		String s = generarRutaPeticion("servicioEnviarCorreo", p);
 		return enviarArchivo(s , prop.getArchivos());
 	}
 
@@ -45,7 +54,7 @@ public class ActividadEnviarCorreo extends TareaEnviarArchivoRest{
 		PropiedadesEnvioCorreoBean a = new PropiedadesEnvioCorreoBean();
 		List<ArchivoBean>archivos = new ArrayList<ArchivoBean>();
 		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/0-convenciones_codigo_java.pdf")));
-//		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/03163695394 RECAUDO JUNIO 2016.csv")));
+		//		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/03163695394 RECAUDO JUNIO 2016.csv")));
 		a.setAsunto("Probando envío de correo")
 		.setDestinatario("nariza@sistematizando.com")
 		.setMensaje("<h1>PRUEBA2</h1><p>Hola como está...........asdfasdf...................., esto es uns PRUEBA desde Java</p><br><h2 style='background:red'>prueba STYLE</h2>")

@@ -10,9 +10,11 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mch.bean.ArchivoBean;
+import com.mch.excepciones.ExcepcionMch;
 import com.mch.utilidades.UtilJwt;
 import com.mch.utilidades.UtilLecturaPropiedades;
 import com.sun.jersey.api.client.Client;
@@ -72,11 +74,17 @@ public class TareaEnviarArchivoRest {
 	 * de acuerdo al archivo de propiedades.
 	 * @param servicio
 	 * @return
-	 * @throws Exception
+	 * @throws IOException 
+	 * @throws JSONException 
+	 * @throws ExcepcionMch 
 	 */
-	public String generarRutaPeticion(String servicio, String negocio, Map<String,Object> parametros) throws Exception{
+	public String generarRutaPeticion(String servicio, Map<String,Object> parametros) throws JSONException, IOException, ExcepcionMch {
+		if(parametros.get("negocio") == null){
+			throw new ExcepcionMch("No se encontró el atributo negocio.");
+		}
+		
 		JSONObject c = UtilLecturaPropiedades.getInstancia().getPropJson("configuracionGeneral","si");
-		JSONObject empresa = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", negocio);
+		JSONObject empresa = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", (String)parametros.get("negocio"));
 		
 		
 		String token = UtilJwt.getInstancia().generarToken(empresa.getString("negocio"),parametros);

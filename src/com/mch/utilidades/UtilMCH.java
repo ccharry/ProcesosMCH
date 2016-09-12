@@ -5,8 +5,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.json.JSONException;
+
+import com.mch.propiedades.servicios.PropiedadServicioCargarArchivo;
 
 
 /**
@@ -57,5 +64,40 @@ public class UtilMCH {
 		in.close();
 		Logger.getLogger(UtilMCH.class.getName()).log(Level.INFO,"Se realizo la conversion con exito");
 		return f.toPath().toString();
+	}
+
+	/**
+	 * Metodo crea un Map con los parametros
+	 * definidos en la clase de configuracion
+	 * de propiedades, se hace una reflection
+	 * sobre la instancia que llega como parametro.
+	 * @param obj
+	 * @return Map<String, Object> con la informacion de los parametros
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	public static Map<String, Object>generarMapPorPropiedad(Object obj) throws IllegalArgumentException, IllegalAccessException{
+		Map<String, Object> r = new HashMap<String, Object>();
+		Class<?> c = obj.getClass();
+		Field[] v = c.getDeclaredFields();
+		for(Field a : v){
+			a.setAccessible(true);
+			if( !(a.getType().isInterface()) && !(a.getType().isArray())){
+				r.put(a.getName(), a.get(obj));
+			}
+		}
+		return r;
+	}
+
+	public static String getDataBaseName(String negocio) throws JSONException, IOException{
+		return UtilLecturaPropiedades.getInstancia().getPropJson("negocio", negocio).getString("dataBase");
+	}
+
+	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
+		PropiedadServicioCargarArchivo prop = new PropiedadServicioCargarArchivo();
+		prop.setDataBase("SanRafael");
+		prop.setTabla("FACTURAS_TEMP");
+		Map<String, Object> ob = generarMapPorPropiedad(prop);
+		System.out.println(ob);
 	}
 }

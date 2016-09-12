@@ -1,9 +1,11 @@
 package com.mch.utilidades;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mch.tareas.TareaConvertInputStreamTo;
@@ -29,9 +31,11 @@ public class UtilLecturaPropiedades {
 	/**
 	 * @param propiedad
 	 * @return
+	 * @throws IOException 
+	 * @throws JSONException 
 	 * @throws Exception
 	 */
-	public JSONObject getPropJson(String atributo, String valor) throws Exception {
+	public JSONObject getPropJson(String atributo, String valor) throws JSONException, IOException  {
 		InputStream in = null;
 		
 		try {

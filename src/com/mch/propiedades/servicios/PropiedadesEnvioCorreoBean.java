@@ -1,6 +1,8 @@
-package com.mch.bean;
+package com.mch.propiedades.servicios;
 
 import java.util.List;
+
+import com.mch.bean.ArchivoBean;
 
 /**
  * @author Camilo
@@ -11,8 +13,9 @@ public class PropiedadesEnvioCorreoBean {
 	private String destinatario = null;
 	private String asunto = null;
 	private String mensaje = null;
+	private String negocio = null; 
 	private List<ArchivoBean>archivos = null;
-
+	
 	/**
 	 * Cuando se quiere enviar un correo a
 	 * un solo destinatario se modifica
@@ -73,4 +76,13 @@ public class PropiedadesEnvioCorreoBean {
 	public List<ArchivoBean> getArchivos() {
 		return archivos;
 	}
+
+	public String getNegocio() {
+		return negocio;
+	}
+
+	public void setNegocio(String negocio) {
+		this.negocio = negocio;
+	}
+	
 }
