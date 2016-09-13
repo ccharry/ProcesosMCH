@@ -81,7 +81,6 @@ public class ActividadCargarArchivo extends TareaEnviarArchivoRest{
 	 */
 	public String cargarArchivosABaseDatos(File[] files, PropiedadServicioCargarArchivo config) throws JSONException, IOException, MessagingException, IllegalArgumentException, IllegalAccessException, ExcepcionMch {
 		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(config);
-		System.out.println(p);
 		List<ArchivoBean> f = new ArrayList<ArchivoBean>();
 		for(File a : files)
 			f.add(new ArchivoBean(a));

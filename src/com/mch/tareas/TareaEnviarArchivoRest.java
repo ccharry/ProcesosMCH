@@ -31,6 +31,7 @@ public class TareaEnviarArchivoRest extends TareaGenerarRutaPeticion{
 	 * @throws MessagingException
 	 */
 	public String enviarArchivo(String URL, List<ArchivoBean>archivos) throws IOException, MessagingException{
+		System.out.println("-------------------------------- "+archivos);
 		ClientConfig config = new DefaultClientConfig();
 		Client client = Client.create(config);
 		WebResource resource = client.resource(URL);
@@ -39,6 +40,7 @@ public class TareaEnviarArchivoRest extends TareaGenerarRutaPeticion{
 
 		if(archivos != null){
 			for(int a = 0 ; a < archivos.size() ; a++){
+				System.out.println("agrega archivo :-: "+archivos.get(a).getArchivo()+" --- ");
 				mb = new MimeBodyPart();
 				mb.attachFile(archivos.get(a).getArchivo());
 				mb.setFileName(archivos.get(a).getNombreArchivo());;

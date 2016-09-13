@@ -20,6 +20,8 @@ public class PropiedadServicioInvocarProcedimiento {
 		return parametros;
 	}
 	public void setParametros(String parametros) {
+		if(parametros == null)
+			parametros = "";
 		this.parametros = parametros;
 	}
 	public String getDataBase() {

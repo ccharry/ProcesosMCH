@@ -31,13 +31,19 @@ import com.mch.propiedades.servicios.PropiedadServicioCargarArchivo;
 import com.mch.propiedades.servicios.PropiedadServicioEnviarCorreo;
 import com.mch.propiedades.servicios.PropiedadServicioInvocarProcedimiento;
 import com.mch.utilidades.UtilMCH;
-
+/**
+ * @author Camilo
+ * 13/09/2016
+ */
 public class ProcesoSanRafael implements Job{
 
 	private static final String NEGOCIO = "SanRafael";
 	private static final String TABLA = "FACTURAS_TEMP";
 	private static final String NOMBRE_REPORTE = "facturaSanRafael";
 	private static final String PASSWORD_ZIP = "sanrafael";
+	private static final String PROCEDIMIENTO_VALIDACIONES = "procValidacionesFacturas";
+	private static final String PROCEDIMIENTO_MOVER_A_HISTORICO = "procMoverAHistorico";
+	private static final String PROCEDIMIENTO_ELIMINAR_TEMPORAL = "procEliminarTemporal";
 
 	private ActividadLeerCorreo actividadLeerCorreo = new ActividadLeerCorreo();
 	private ActividadCargarArchivo actividadCargarArchivo = new ActividadCargarArchivo();
@@ -49,23 +55,80 @@ public class ProcesoSanRafael implements Job{
 	private PropiedadServicioEnviarCorreo propiedadServicioEnviarCorreo = new PropiedadServicioEnviarCorreo();
 	private ArchivoBean archivoBean = null;
 
+	private String mensaje = null, rutaArchivosTemporales = null;;
+	private JSONObject objTemp = null;
+
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
-			JSONObject p = new ActividadLeerCorreo().leerCorreo("SanRafael");
-			System.out.println(p);
+			JSONObject obj = actividadLeerCorreo.leerCorreo(NEGOCIO);
+			if(obj.isNull("info")){
+				throw new JobExecutionException(obj.toString());
+			}
+			System.out.println(obj);
+			JSONArray array = obj.getJSONArray("info");
+			for(int a = 0 ; a < array.length(); a++){
+				mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA);
+				rutaArchivosTemporales = array.getJSONObject(a).getString("ruta");
+				objTemp = new JSONObject(mensaje);
+				if( !objTemp.isNull("errores")){
+					if(objTemp.getJSONArray("errores").length() > 0){
+						enviarCorreo(null, generarTablaMensaje(objTemp.getJSONArray("errores")), array.getJSONObject(a));
+						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
+						continue;
+					}
+				}
+				String r = invocarProcedimiento(array.getJSONObject(a).getString("destinatario"), NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaZip = null;
+				if(r.equals("ok")){
+					rutaZip = generarReporteZip(NOMBRE_REPORTE, PASSWORD_ZIP);
+					r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
+					enviarCorreo(rutaZip,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.",  array.getJSONObject(a));
+
+
+				}else{
+					enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a));
+				}
+			}
+			rutaArchivosTemporales = rutaArchivosTemporales.substring(0, rutaArchivosTemporales.lastIndexOf("\\")).replace(":", "$");
+			System.out.println(" ------------- "+rutaArchivosTemporales);
+//			String ruta = UtilMCH.getRutaProyecto().replace("bin/", "temporales");
+			eliminarCarpetasTemporales(rutaArchivosTemporales);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally{
+			actividadLeerCorreo = null;
+			actividadCargarArchivo = null;
+			actividadInvocarProcedimiento= null;
+			actividadGenerarReportesZip = null;
+			actividadEnviarCorreo = null;
+			propServicioCargarArchivo = null;
+			propiedadServicioInvocarProcedimiento = null;
+			propiedadServicioEnviarCorreo = null;
+			archivoBean = null;
 		}
 
 	}
 
-	public JSONObject leerCorreo(String negocio) throws JSONException, IOException {
-		return actividadLeerCorreo.leerCorreo(negocio);
-	}
 
-	public void cargarArchivosDB(JSONObject ruta, String negocio, String tabla) throws JSONException, IOException, MessagingException, IllegalArgumentException, IllegalAccessException, ExcepcionMch{
+	/**
+	 * Metodo que invoca un servicio que
+	 * carga archivos excel a la DB, el 
+	 * servicio valida la estructura, de 
+	 * acuerdo a la tabla a donde se va a
+	 * cargar la información.
+	 * @param ruta
+	 * @param negocio
+	 * @param tabla
+	 * @return String con el mensaje que retorna el servicio
+	 * @throws JSONException
+	 * @throws IOException
+	 * @throws MessagingException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws ExcepcionMch
+	 */
+	private String cargarArchivosDB(JSONObject ruta, String negocio, String tabla) throws JSONException, IOException, MessagingException, IllegalArgumentException, IllegalAccessException, ExcepcionMch{
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 		//Se modifican los parametros que espera el servicio
 		//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,50 +136,140 @@ public class ProcesoSanRafael implements Job{
 		propServicioCargarArchivo.setTabla(tabla);
 		propServicioCargarArchivo.setDataBase(UtilMCH.getDataBaseName(negocio));
 
-		String b = actividadCargarArchivo.cargarArchivosABaseDatos(new File(ruta.getString("ruta")).listFiles(), propServicioCargarArchivo);
-		System.out.println(b);
+		return actividadCargarArchivo.cargarArchivosABaseDatos(new File(ruta.getString("ruta")).listFiles(), propServicioCargarArchivo);
 	}
 
-	public String  invocarProcedimientoValidaciones(String email, String negocio) throws JSONException, IllegalArgumentException, IllegalAccessException, IOException, ExcepcionMch{
-		propiedadServicioInvocarProcedimiento.setParametros(email);
-		propiedadServicioInvocarProcedimiento.setProcedimiento("procValidacionesFacturas");
+	/**
+	 * Metodod que invoca un servicio
+	 * que ejecuta un procedimiento 
+	 * almacenado.
+	 * @param parametros
+	 * @param negocio
+	 * @param procedimiento
+	 * @return String con el mensaje que retorna el procedimiento
+	 * @throws JSONException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 * @throws ExcepcionMch
+	 */
+	private String invocarProcedimiento(String parametros, String negocio, String procedimiento) throws JSONException, IllegalArgumentException, IllegalAccessException, IOException, ExcepcionMch{
+		propiedadServicioInvocarProcedimiento.setParametros(parametros);
+		propiedadServicioInvocarProcedimiento.setProcedimiento(procedimiento);
 		propiedadServicioInvocarProcedimiento.setDataBase(UtilMCH.getDataBaseName(negocio));
 		propiedadServicioInvocarProcedimiento.setNegocio(negocio);
 		return actividadInvocarProcedimiento.invocarProcedimiento(propiedadServicioInvocarProcedimiento);
 	}
 
-	public String generarReporteZip(String nombreReporte, String pass) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
+	/**
+	 * Metodo que crea un reporte en PDF
+	 * y lo comprime en un archivo ZIP.
+	 * @param nombreReporte
+	 * @param pass
+	 * @return String con la ruta en donde escribió el ZIP
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws ExcepcionMch
+	 * @throws JRException
+	 * @throws IOException
+	 * @throws ZipException
+	 * @throws InterruptedException
+	 */
+	private String generarReporteZip(String nombreReporte, String pass) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
 		Map<String, Object> p = new HashMap<String, Object> ();
 		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
 		return actividadGenerarReportesZip.generarReportesZip(nombreReporte,pass, p);
 	}
 
-	public String enviarCorreo(String rutaZip, JSONObject obj) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException, MessagingException{
-		List<ArchivoBean> archivos = new ArrayList<ArchivoBean>();
-		archivoBean = new ArchivoBean(new File(rutaZip));
-		archivos.add(archivoBean);
+	/**
+	 * Metodo que invoca un servicio que
+	 * envia correos electrónicos. 
+	 * @param rutaZip
+	 * @param mensaje
+	 * @param obj
+	 * @return String
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws JSONException
+	 * @throws ExcepcionMch
+	 * @throws IOException
+	 * @throws MessagingException
+	 */
+	private String enviarCorreo(String rutaZip,String mensaje, JSONObject obj) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException, MessagingException{
+		if(rutaZip != null){
+			List<ArchivoBean> archivos = new ArrayList<ArchivoBean>();
+			archivoBean = new ArchivoBean(new File(rutaZip));
+			archivos.add(archivoBean);
+			propiedadServicioEnviarCorreo.setArchivos(archivos);
+		}else if(rutaZip == null){
+			propiedadServicioEnviarCorreo.setArchivos(null);
+		}
 		propiedadServicioEnviarCorreo.setAsunto(obj.getString("asunto"));
 		propiedadServicioEnviarCorreo.setDestinatario(obj.getString("destinatario"));
-		propiedadServicioEnviarCorreo.setMensaje("Se adjuntan reportes");
+		propiedadServicioEnviarCorreo.setMensaje(mensaje);
 		propiedadServicioEnviarCorreo.setNegocio(NEGOCIO);
-		propiedadServicioEnviarCorreo.setArchivos(archivos);
 		return actividadEnviarCorreo.enviarEmail(propiedadServicioEnviarCorreo);
 	}
 
-
-	public static void main(String[] args) throws JSONException, IOException, MessagingException, IllegalArgumentException, IllegalAccessException, ExcepcionMch, ClassNotFoundException, SQLException, JRException, ZipException, InterruptedException{
-		ProcesoSanRafael p = new ProcesoSanRafael();
-		JSONObject obj = p.leerCorreo(NEGOCIO);
-		JSONArray array = obj.getJSONArray("info");
-		for(int a = 0 ; a < array.length(); a++){
-			p.cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA);
-			String r = p.invocarProcedimientoValidaciones(array.getJSONObject(a).getString("destinatario"), NEGOCIO).trim().toLowerCase(), rutaZip = null;
-			if(r.equals("ok")){
-				rutaZip = p.generarReporteZip(NOMBRE_REPORTE, PASSWORD_ZIP);
-				System.out.println(rutaZip);
-				p.enviarCorreo(rutaZip, array.getJSONObject(a));
+	/**
+	 * Metodo que crea una tabla HTML
+	 * con los mensaje que llegan en
+	 * un arreglo, puede ser un arreglo
+	 * de String o puede ser un objeto
+	 * de tipo JSONArray
+	 * @param inconsistencias
+	 * @return String
+	 */
+	private String generarTablaMensaje(Object inconsistencias){
+		StringBuilder mensaje = new StringBuilder("<p style='color: red;font-weight: bold;'>Terminó el proceso, no se importó información porque se han presentado las siguientes inconsistencias:</p> <br><br>");
+		mensaje.append("<table border='1'>");
+		mensaje.append("<thead><tr><th>Mensaje</th></td></thead>");
+		mensaje.append("<tbody>");
+		if(inconsistencias instanceof String[]){
+			for(String i : (String[])inconsistencias){
+				mensaje.append("<tr><td>"+i.trim()+"</td></tr>");
 			}
-			System.out.println(r);
+		}else if(inconsistencias instanceof JSONArray){
+			JSONArray j = (JSONArray)inconsistencias;
+			for(int a = 0 ; a < j.length() ; a++){
+				mensaje.append("<tr><td>"+j.getString(a).trim()+"</td></tr>");
+			}
 		}
+		mensaje.append("</tbody>");
+		mensaje.append("</table>");
+		return mensaje.toString();
+	}
+
+	/**
+	 * Metodo que elimina todos los archivos temporales.
+	 * @param ruta
+	 */
+	private void eliminarCarpetasTemporales(String ruta){
+		try{
+			File f = new File(ruta);
+			for(File a : f.listFiles()){
+				if(a.isDirectory())
+					eliminarCarpetasTemporales(a.getAbsolutePath());
+				else if(a.isFile() && !a.getName().contains(".txt"))
+					a.delete();
+			}
+			if(f.isDirectory() && !f.getName().equals("temporales"))
+				f.delete();
+
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public static void main(String[] args) throws JSONException, IOException, MessagingException, IllegalArgumentException, IllegalAccessException, ExcepcionMch, ClassNotFoundException, SQLException, JRException, ZipException, InterruptedException, JobExecutionException{
+//		String a = "\\192.168.2.5\\C$\\TOMCAT_7\\webapps\\ServiciosMCH\\temporales\\20160913-1473802099989";
+//		a = a.substring(0, a.lastIndexOf("\\"));
+//		System.out.println(a);
+		ProcesoSanRafael p = new ProcesoSanRafael();
+		p.execute(null);
+		//		File f = new File("E:/RepositorioGITPortal/ProcesosMCH/temporales/temporal_1473782431014/facturaSanRafael_1473782431014.zip");
+		//		String a = f.getAbsolutePath();
+		//		a = a.substring(0, a.lastIndexOf("\\"));
+		//		System.out.println(a);
 	}
 }

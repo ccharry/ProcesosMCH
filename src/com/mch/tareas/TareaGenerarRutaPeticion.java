@@ -42,7 +42,6 @@ public class TareaGenerarRutaPeticion {
 				mapeoClase = (String)c.get(servicio),
 				proyecto   = (String)c.get("proyecto"),
 				protocolo  = (String)c.get("protocolo");
-		System.out.println(protocolo+"://"+ipServidor+":"+puerto+"/"+proyecto+"/rest/"+mapeoClase+"/"+token);
 		return protocolo+"://"+ipServidor+":"+puerto+"/"+proyecto+"/rest/"+mapeoClase+"/"+token;
 	}
 }

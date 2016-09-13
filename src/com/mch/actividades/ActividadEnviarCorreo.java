@@ -1,16 +1,12 @@
 package com.mch.actividades;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
 
 import org.json.JSONException;
 
-import com.mch.bean.ArchivoBean;
 import com.mch.excepciones.ExcepcionMch;
 import com.mch.propiedades.servicios.PropiedadServicioEnviarCorreo;
 import com.mch.tareas.TareaEnviarArchivoRest;
@@ -46,19 +42,21 @@ public class ActividadEnviarCorreo extends TareaEnviarArchivoRest{
 		}
 
 		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(prop);
+		System.out.println(prop.getArchivos()+" ... antes ... "+p);
 		String s = generarRutaPeticion("servicioEnviarCorreo", p);
 		return enviarArchivo(s , prop.getArchivos());
 	}
 
 	public static void main(String[] args) throws Throwable {
 		PropiedadServicioEnviarCorreo a = new PropiedadServicioEnviarCorreo();
-		List<ArchivoBean>archivos = new ArrayList<ArchivoBean>();
-		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/0-convenciones_codigo_java.pdf")));
+//		List<ArchivoBean>archivos = new ArrayList<ArchivoBean>();
+//		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/0-convenciones_codigo_java.pdf")));
 		//		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/03163695394 RECAUDO JUNIO 2016.csv")));
 		a.setAsunto("Probando envío de correo")
-		.setDestinatario("nariza@sistematizando.com")
+		.setDestinatario("ccamilo2303@gmail.com")
 		.setMensaje("<h1>PRUEBA2</h1><p>Hola como está...........asdfasdf...................., esto es uns PRUEBA desde Java</p><br><h2 style='background:red'>prueba STYLE</h2>")
-		.setArchivos(archivos);
+		.setArchivos(null);
+		a.setNegocio("SanRafael");
 		//				.setArchivo(new ArchivoBean("1Liq Rec Emfermeria Abril - PRUEBA.xlsx",new File("E:/ARCHIVOBASE/1Liq Rec Emfermeria Abril - PRUEBA.xlsx")));
 		String r = new ActividadEnviarCorreo().enviarEmail(a);
 		System.out.println(r);

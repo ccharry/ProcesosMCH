@@ -18,17 +18,19 @@ import com.mch.procesos.ProcesoSanRafael;
  */
 public class Main {
 	/**
-	 * Raiz principal de la tarea
+	 * Raiz principal de la tarea, en esta clase 
+	 * se mapean todas las tareas que se quieren
+	 * ejecutar.
 	 * @param args
 	 * @throws SchedulerException
 	 */
 	public static void main(String[] args) throws SchedulerException {
 
-		JobDetail job = JobBuilder.newJob(ProcesoSanRafael.class).withIdentity("lecturaCorreo", "group1").build();
+		JobDetail job = JobBuilder.newJob(ProcesoSanRafael.class).withIdentity("procesoSanRafael", "group1").build();
 
 		Trigger trigger = TriggerBuilder.newTrigger()
-				.withIdentity("triggerLecturaCorreo", "group1")
-				.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(300).repeatForever())
+				.withIdentity("triggerProcesoSanRafael", "group1")
+				.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(5).repeatForever())
 				.build();
 
 		Scheduler scheduler = new StdSchedulerFactory().getScheduler();
