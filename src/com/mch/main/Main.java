@@ -1,5 +1,4 @@
 package com.mch.main;
-
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -8,10 +7,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-
 import com.mch.procesos.ProcesoSanRafael;
-
-
 /**
  * @author Camilo
  * 31/08/2016
@@ -25,7 +21,6 @@ public class Main {
 	 * @throws SchedulerException
 	 */
 	public static void main(String[] args) throws SchedulerException {
-
 		JobDetail job = JobBuilder.newJob(ProcesoSanRafael.class).withIdentity("procesoSanRafael", "group1").build();
 
 		Trigger trigger = TriggerBuilder.newTrigger()

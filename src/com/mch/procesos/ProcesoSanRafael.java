@@ -23,12 +23,14 @@ import org.quartz.JobExecutionException;
 import com.mch.actividades.ActividadCargarArchivo;
 import com.mch.actividades.ActividadEnviarCorreo;
 import com.mch.actividades.ActividadGenerarReportesZip;
+import com.mch.actividades.ActividadInsertar;
 import com.mch.actividades.ActividadInvocarProcedimiento;
 import com.mch.actividades.ActividadLeerCorreo;
 import com.mch.bean.ArchivoBean;
 import com.mch.excepciones.ExcepcionMch;
 import com.mch.propiedades.servicios.PropiedadServicioCargarArchivo;
 import com.mch.propiedades.servicios.PropiedadServicioEnviarCorreo;
+import com.mch.propiedades.servicios.PropiedadServicioInsertarLog;
 import com.mch.propiedades.servicios.PropiedadServicioInvocarProcedimiento;
 import com.mch.utilidades.UtilMCH;
 /**
@@ -37,13 +39,13 @@ import com.mch.utilidades.UtilMCH;
  */
 public class ProcesoSanRafael implements Job{
 
-	private static final String NEGOCIO = "SanRafael";
-	private static final String TABLA = "FACTURAS_TEMP";
-	private static final String NOMBRE_REPORTE = "facturaSanRafael";
-	private static final String PASSWORD_ZIP = "sanrafael";
-	private static final String PROCEDIMIENTO_VALIDACIONES = "procValidacionesFacturas";
-	private static final String PROCEDIMIENTO_MOVER_A_HISTORICO = "procMoverAHistorico";
-	private static final String PROCEDIMIENTO_ELIMINAR_TEMPORAL = "procEliminarTemporal";
+	private static String NEGOCIO = "SanRafael";
+	private static  String TABLA = "FACTURAS_TEMP";
+	private static  String NOMBRE_REPORTE = "facturaSanRafael";
+	private static  String PASSWORD_ZIP = "sanrafael";
+	private static  String PROCEDIMIENTO_VALIDACIONES = "procValidacionesFacturas";
+	private static  String PROCEDIMIENTO_MOVER_A_HISTORICO = "procMoverAHistorico";
+	private static  String PROCEDIMIENTO_ELIMINAR_TEMPORAL = "procEliminarTemporal";
 
 	private ActividadLeerCorreo actividadLeerCorreo = new ActividadLeerCorreo();
 	private ActividadCargarArchivo actividadCargarArchivo = new ActividadCargarArchivo();
@@ -62,11 +64,12 @@ public class ProcesoSanRafael implements Job{
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		try {
+			insertarLog(NEGOCIO, "Inició el proceso de San Rafael", "San Rafael");
+
 			JSONObject obj = actividadLeerCorreo.leerCorreo(NEGOCIO);
 			if(obj.isNull("info")){
 				throw new JobExecutionException(obj.toString());
 			}
-			System.out.println(obj);
 			JSONArray array = obj.getJSONArray("info");
 			for(int a = 0 ; a < array.length(); a++){
 				mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA);
@@ -85,16 +88,25 @@ public class ProcesoSanRafael implements Job{
 					r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
 					enviarCorreo(rutaZip,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.",  array.getJSONObject(a));
 
-
 				}else{
 					enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a));
 				}
 			}
-			rutaArchivosTemporales = rutaArchivosTemporales.substring(0, rutaArchivosTemporales.lastIndexOf("\\")).replace(":", "$");
-			System.out.println(" ------------- "+rutaArchivosTemporales);
-//			String ruta = UtilMCH.getRutaProyecto().replace("bin/", "temporales");
-			eliminarCarpetasTemporales(rutaArchivosTemporales);
+			if(rutaArchivosTemporales != null){
+				if(!rutaArchivosTemporales.toLowerCase().replace(" ", "").replace("null", "").equals("")){	
+					rutaArchivosTemporales = rutaArchivosTemporales.substring(0, rutaArchivosTemporales.lastIndexOf("\\")).replace(":", "$");
+					//String ruta = UtilMCH.getRutaProyecto().replace("bin/", "temporales");
+					eliminarCarpetasTemporales(rutaArchivosTemporales);
+				}
+			}
+			insertarLog(NEGOCIO, "Termina proceso sin errores", "San Rafael");
 		} catch (Exception e) {
+			try {
+				insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "San Rafael");
+			} catch (JSONException | IllegalArgumentException
+					| IllegalAccessException | IOException | ExcepcionMch e1) {
+				e1.printStackTrace();
+			}
 			e.printStackTrace();
 		}finally{
 			actividadLeerCorreo = null;
@@ -106,6 +118,14 @@ public class ProcesoSanRafael implements Job{
 			propiedadServicioInvocarProcedimiento = null;
 			propiedadServicioEnviarCorreo = null;
 			archivoBean = null;
+
+			NEGOCIO = null;
+			TABLA = null;
+			NOMBRE_REPORTE = null;
+			PASSWORD_ZIP = null;
+			PROCEDIMIENTO_VALIDACIONES = null;
+			PROCEDIMIENTO_MOVER_A_HISTORICO = null;
+			PROCEDIMIENTO_ELIMINAR_TEMPORAL = null;
 		}
 
 	}
@@ -135,7 +155,6 @@ public class ProcesoSanRafael implements Job{
 		propServicioCargarArchivo.setNegocio(negocio);
 		propServicioCargarArchivo.setTabla(tabla);
 		propServicioCargarArchivo.setDataBase(UtilMCH.getDataBaseName(negocio));
-
 		return actividadCargarArchivo.cargarArchivosABaseDatos(new File(ruta.getString("ruta")).listFiles(), propServicioCargarArchivo);
 	}
 
@@ -196,6 +215,9 @@ public class ProcesoSanRafael implements Job{
 	 * @throws MessagingException
 	 */
 	private String enviarCorreo(String rutaZip,String mensaje, JSONObject obj) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException, MessagingException{
+
+		insertarLog(NEGOCIO, "Envia correo", "San Rafael");
+
 		if(rutaZip != null){
 			List<ArchivoBean> archivos = new ArrayList<ArchivoBean>();
 			archivoBean = new ArchivoBean(new File(rutaZip));
@@ -261,10 +283,21 @@ public class ProcesoSanRafael implements Job{
 		}
 	}
 
+	public void insertarLog(String negocio, String mensaje, String proceso) throws JSONException, IllegalArgumentException, IllegalAccessException, IOException, ExcepcionMch{
+		PropiedadServicioInsertarLog propiedadServicioInsertarLog = new PropiedadServicioInsertarLog();
+		propiedadServicioInsertarLog.setDataBase(UtilMCH.getDataBaseName(negocio));
+		propiedadServicioInsertarLog.setMensaje(mensaje);
+		propiedadServicioInsertarLog.setProceso(proceso);
+		propiedadServicioInsertarLog.setNegocio(negocio);
+		JSONObject a = new JSONObject(ActividadInsertar.log(propiedadServicioInsertarLog));
+		if(!a.isNull("error"))
+			throw new ExcepcionMch(a.toString());
+	}
+
 	public static void main(String[] args) throws JSONException, IOException, MessagingException, IllegalArgumentException, IllegalAccessException, ExcepcionMch, ClassNotFoundException, SQLException, JRException, ZipException, InterruptedException, JobExecutionException{
-//		String a = "\\192.168.2.5\\C$\\TOMCAT_7\\webapps\\ServiciosMCH\\temporales\\20160913-1473802099989";
-//		a = a.substring(0, a.lastIndexOf("\\"));
-//		System.out.println(a);
+		//		String a = "\\192.168.2.5\\C$\\TOMCAT_7\\webapps\\ServiciosMCH\\temporales\\20160913-1473802099989";
+		//		a = a.substring(0, a.lastIndexOf("\\"));
+		//		System.out.println(a);
 		ProcesoSanRafael p = new ProcesoSanRafael();
 		p.execute(null);
 		//		File f = new File("E:/RepositorioGITPortal/ProcesosMCH/temporales/temporal_1473782431014/facturaSanRafael_1473782431014.zip");

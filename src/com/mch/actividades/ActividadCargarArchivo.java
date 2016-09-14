@@ -40,7 +40,6 @@ public class ActividadCargarArchivo extends TareaEnviarArchivoRest{
 		List<ArchivoBean> f = new ArrayList<ArchivoBean>();
 		f.add(new ArchivoBean(file));
 		String URL = generarRutaPeticion("servicioCargarArchivoExcel",p);
-		System.out.println(URL);
 		return enviarArchivo(URL, f);
 	}
 	
