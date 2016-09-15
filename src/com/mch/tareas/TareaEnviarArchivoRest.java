@@ -30,7 +30,7 @@ public class TareaEnviarArchivoRest extends TareaGenerarRutaPeticion{
 	 * @throws IOException
 	 * @throws MessagingException
 	 */
-	public String enviarArchivo(String URL, List<ArchivoBean>archivos) throws IOException, MessagingException{
+	protected String enviarArchivo(String URL, List<ArchivoBean>archivos) throws IOException, MessagingException{
 		ClientConfig config = new DefaultClientConfig();
 		Client client = Client.create(config);
 		WebResource resource = client.resource(URL);
