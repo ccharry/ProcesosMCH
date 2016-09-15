@@ -38,5 +38,32 @@ public class ActividadInvocarProcedimiento extends TareaGenerarRutaPeticion{
 		}
 		return r;
 	}
+	
+	public static void main(String[] args) {
+		ActividadInvocarProcedimiento acProcedimiento = new ActividadInvocarProcedimiento();
+		PropiedadServicioInvocarProcedimiento procedimiento  = new PropiedadServicioInvocarProcedimiento();
+		procedimiento.setNegocio("SanRafael");
+		procedimiento.setDataBase("SanRafael");
+		procedimiento.setProcedimiento("procEliminarTemporal");
+		procedimiento.setParametros("");
+		try {
+			System.out.println(acProcedimiento.invocarProcedimiento(procedimiento));
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExcepcionMch e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }

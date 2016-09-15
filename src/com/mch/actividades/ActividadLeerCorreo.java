@@ -31,4 +31,17 @@ public class ActividadLeerCorreo {
 	public JSONObject leerCorreo(String negocio) throws JSONException, IOException {
 		return new TareaPeticion().GET(new PropiedadesPeticion(negocio).generarRutaPeticion());
 	}
+	
+	public static void main(String[] args) {
+		ActividadLeerCorreo ac = new ActividadLeerCorreo();
+		try {
+			System.out.println(ac.leerCorreo("san").toString());
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 }
