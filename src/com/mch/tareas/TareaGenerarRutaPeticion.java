@@ -26,7 +26,7 @@ public class TareaGenerarRutaPeticion {
 	 * @throws JSONException 
 	 * @throws ExcepcionMch 
 	 */
-	protected String generarRutaPeticion(String servicio, Map<String,Object> parametros) throws JSONException, IOException, ExcepcionMch {
+	public String generarRutaPeticion(String servicio, Map<String,Object> parametros) throws JSONException, IOException, ExcepcionMch {
 		if(parametros.get("negocio") == null){
 			throw new ExcepcionMch("No se encontró el atributo negocio.");
 		}
