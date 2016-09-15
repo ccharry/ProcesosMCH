@@ -16,7 +16,6 @@ import com.mch.utilidades.UtilMCH;
  */
 public class ActividadInvocarProcedimiento extends TareaGenerarRutaPeticion{
 	
-	private TareaPeticion tarea = null;
 	
 	/**
 	 * @param prop
@@ -28,6 +27,7 @@ public class ActividadInvocarProcedimiento extends TareaGenerarRutaPeticion{
 	 * @throws IllegalAccessException
 	 */
 	public String invocarProcedimiento(PropiedadServicioInvocarProcedimiento prop) throws IOException, ExcepcionMch, JSONException, IllegalArgumentException, IllegalAccessException {
+		TareaPeticion tarea = null;
 		String r = null, URL = null;
 		try{
 			tarea = new TareaPeticion();

@@ -8,7 +8,8 @@
     	"servicioEnviarCorreo":"enviarCorreo",
     	"servicioLeerCorreo":"lecturaCorreo",
     	"servicioCargarArchivoExcel":"cargarArchivo",
-    	"servicioInvocarProcedimiento":"invocarProcedimiento"
+    	"servicioInvocarProcedimiento":"invocarProcedimiento",
+    	"servicioInsertarLog":"insertarLog"
     },
 	{
 		"negocio":"SanRafael",
