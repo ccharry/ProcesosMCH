@@ -15,10 +15,15 @@
 		"negocio":"SanRafael",
 		"dataBase":"SanRafael",
 		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA"
+	},{
+		"negocio":"SoporteMCH",
+		"dataBase":"SanRafael",
+		"correo":"cbeltran@sistematizando.com"
 	},
 	{
 		"negocio":"san",
 		"dataBase":"SanRafael",
 		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA"
 	}
+	
 ]

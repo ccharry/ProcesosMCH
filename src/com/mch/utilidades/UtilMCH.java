@@ -92,6 +92,10 @@ public class UtilMCH {
 	public static String getDataBaseName(String negocio) throws JSONException, IOException{
 		return UtilLecturaPropiedades.getInstancia().getPropJson("negocio", negocio).getString("dataBase");
 	}
+	
+	public static String getEmailSoporte(String negocio) throws JSONException, IOException{
+		return UtilLecturaPropiedades.getInstancia().getPropJson("negocio", negocio).getString("correo");
+	}
 
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
 		PropiedadServicioCargarArchivo prop = new PropiedadServicioCargarArchivo();

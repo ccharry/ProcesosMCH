@@ -36,7 +36,6 @@ public class TareaEnviarArchivoRest extends TareaGenerarRutaPeticion{
 		WebResource resource = client.resource(URL);
 		MimeMultipart request = new MimeMultipart();
 		MimeBodyPart mb = null;
-
 		if(archivos != null){
 			for(int a = 0 ; a < archivos.size() ; a++){
 				mb = new MimeBodyPart();
