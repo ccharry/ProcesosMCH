@@ -40,5 +40,13 @@ public class ActividadInsertar{
 		}
 		return r;
 	}
+	public static void main(String[] args) throws JSONException, IllegalArgumentException, IllegalAccessException, IOException, ExcepcionMch {
+		PropiedadServicioInsertarLog a = new PropiedadServicioInsertarLog();
+		a.setDataBase("SanRafael");
+		a.setMensaje("PRUEBA!");
+		a.setNegocio("SanRafael");
+		a.setProceso("PRUEBA!");
+		ActividadInsertar.log(a);
+	}
 	
 }

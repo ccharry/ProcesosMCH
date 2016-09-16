@@ -22,7 +22,7 @@ import org.quartz.JobExecutionException;
 
 import com.mch.actividades.ActividadCargarArchivo;
 import com.mch.actividades.ActividadEnviarCorreo;
-import com.mch.actividades.ActividadGenerarReportesZip;
+import com.mch.actividades.ActividadGenerarReportes;
 import com.mch.actividades.ActividadInsertar;
 import com.mch.actividades.ActividadInvocarProcedimiento;
 import com.mch.actividades.ActividadLeerCorreo;
@@ -32,6 +32,7 @@ import com.mch.propiedades.servicios.PropiedadServicioCargarArchivo;
 import com.mch.propiedades.servicios.PropiedadServicioEnviarCorreo;
 import com.mch.propiedades.servicios.PropiedadServicioInsertarLog;
 import com.mch.propiedades.servicios.PropiedadServicioInvocarProcedimiento;
+import com.mch.utilidades.UtilLecturaPropiedades;
 import com.mch.utilidades.UtilMCH;
 /**
  * @author Camilo
@@ -39,10 +40,10 @@ import com.mch.utilidades.UtilMCH;
  */
 public class ProcesoSanRafael implements Job{
 
-	private static String NEGOCIO = "san";
+	private static String NEGOCIO = "SanRafael";
 	private static String TABLA = "FACTURAS_TEMP";
 	private static String NOMBRE_REPORTE = "facturaSanRafael";
-	private static String PASSWORD_ZIP = "sanrafael";
+	private static String PASSWORD_FILE = "sanrafael";
 	private static String PROCEDIMIENTO_VALIDACIONES = "procValidacionesFacturas";
 	private static String PROCEDIMIENTO_MOVER_A_HISTORICO = "procMoverAHistorico";
 	private static String PROCEDIMIENTO_ELIMINAR_TEMPORAL = "procEliminarTemporal";
@@ -51,7 +52,7 @@ public class ProcesoSanRafael implements Job{
 	private ActividadLeerCorreo actividadLeerCorreo = new ActividadLeerCorreo();
 	private ActividadCargarArchivo actividadCargarArchivo = new ActividadCargarArchivo();
 	private ActividadInvocarProcedimiento actividadInvocarProcedimiento = new ActividadInvocarProcedimiento();
-	private ActividadGenerarReportesZip actividadGenerarReportesZip = new ActividadGenerarReportesZip();
+	private ActividadGenerarReportes actividadGenerarReportesZip = new ActividadGenerarReportes();
 	private ActividadEnviarCorreo actividadEnviarCorreo = new ActividadEnviarCorreo();
 	private PropiedadServicioCargarArchivo propServicioCargarArchivo = new PropiedadServicioCargarArchivo();
 	private PropiedadServicioInvocarProcedimiento propiedadServicioInvocarProcedimiento = new PropiedadServicioInvocarProcedimiento();
@@ -74,7 +75,7 @@ public class ProcesoSanRafael implements Job{
 			}
 			JSONArray array = obj.getJSONArray("info");
 			for(int a = 0 ; a < array.length(); a++){
-				emailActual = array.getJSONObject(a).getString("destinatario");
+				emailActual = array.getJSONObject(a).getString("remitente");
 				asuntoActual = array.getJSONObject(a).getString("asunto");
 
 				mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA);
@@ -88,11 +89,18 @@ public class ProcesoSanRafael implements Job{
 					}
 				}
 
-				String r = invocarProcedimiento(array.getJSONObject(a).getString("destinatario"), NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaZip = null;
+				String r = invocarProcedimiento(array.getJSONObject(a).getString("remitente"), NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaArchivo = null;
 				if(r.equals("ok")){
-					rutaZip = generarReporteZip(NOMBRE_REPORTE, PASSWORD_ZIP);
+					boolean generarZip = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", NEGOCIO).getBoolean("generarZIP");
+					
+					if(generarZip == true){
+						rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,true, NEGOCIO);
+					}else{
+						rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,false, NEGOCIO);
+					}
+					
 					r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
-					enviarCorreo(rutaZip,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.",  array.getJSONObject(a), NEGOCIO);
+					enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.",  array.getJSONObject(a), NEGOCIO);
 
 				}else{
 					enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a), NEGOCIO);
@@ -108,8 +116,8 @@ public class ProcesoSanRafael implements Job{
 			insertarLog(NEGOCIO, "Termina proceso sin errores", "San Rafael");
 		} catch (Exception e) {
 			try {
-				enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("destinatario", emailActual).put("asunto", asuntoActual), NEGOCIO);
-				enviarCorreo("", "Ha ocurrido un error en el proceso de San Rafael: <br> <br> "+e.getMessage(), new JSONObject().put("destinatario", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! San Rafael"), "SoporteMCH");
+				enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
+				enviarCorreo("", "Ha ocurrido un error en el proceso de San Rafael: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! San Rafael"), "SoporteMCH");
 				insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "San Rafael");
 			} catch (Exception e1) {
 				e1.printStackTrace();
@@ -196,10 +204,15 @@ public class ProcesoSanRafael implements Job{
 	 * @throws ZipException
 	 * @throws InterruptedException
 	 */
-	private String generarReporteZip(String nombreReporte, String pass) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
+	private String generarReporte(String nombreReporte, String pass, boolean generarZip, String negocio) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
+		String r = null;
 		Map<String, Object> p = new HashMap<String, Object> ();
 		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
-		return actividadGenerarReportesZip.generarReportesZip(nombreReporte,pass, p);
+		if(generarZip)
+			r = actividadGenerarReportesZip.generarReportesZip(nombreReporte,pass, p);
+		else
+			r = actividadGenerarReportesZip.generarReporte(nombreReporte, pass, p, UtilMCH.getDataBaseName(negocio));
+		return r;
 	}
 
 	/**
@@ -228,7 +241,7 @@ public class ProcesoSanRafael implements Job{
 			propiedadServicioEnviarCorreo.setArchivos(null);
 		}
 		propiedadServicioEnviarCorreo.setAsunto(obj.getString("asunto"));
-		propiedadServicioEnviarCorreo.setDestinatario(obj.getString("destinatario"));
+		propiedadServicioEnviarCorreo.setDestinatario(obj.getString("remitente"));
 		propiedadServicioEnviarCorreo.setMensaje(mensaje);
 		propiedadServicioEnviarCorreo.setNegocio(negocio);
 		return actividadEnviarCorreo.enviarEmail(propiedadServicioEnviarCorreo);

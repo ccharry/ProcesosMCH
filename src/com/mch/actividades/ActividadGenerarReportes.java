@@ -17,7 +17,7 @@ import com.mch.utilidades.UtilMCH;
  * @author Camilo
  * 12/09/2016
  */
-public class ActividadGenerarReportesZip {
+public class ActividadGenerarReportes {
 
 	/**
 	 * Metodod que genera un reporte en PDF
@@ -49,10 +49,48 @@ public class ActividadGenerarReportesZip {
 		}
 		return retorno;
 	}
+	
+	/**
+	 * Metodo que genera un reporte en PDF con contraseña
+	 * @param nombreReporte
+	 * @param pass
+	 * @param p
+	 * @return String con la ruta en donde escribió el reporte
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws ExcepcionMch
+	 * @throws JRException
+	 * @throws IOException
+	 */
+	public String generarReporte(String nombreReporte, String pass, Map<String, Object> p) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
+		TareaGenerarReportePDF generadorPDF = new TareaGenerarReportePDF();
+		long t = System.currentTimeMillis();
+		String r = null;
+		try{
+			r = generadorPDF.generarPDF(nombreReporte, t, p);
+		}finally{
+			generadorPDF = null;
+		}
+		return r;
+	}
+	
+	
+	public String generarReporte(String nombreReporte, String pass, Map<String, Object> p, String DB) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
+		TareaGenerarReportePDF generadorPDF = new TareaGenerarReportePDF();
+		long t = System.currentTimeMillis();
+		String r = null;
+		try{
+			r = generadorPDF.generarPDF(nombreReporte, t, p, pass, DB);
+		}finally{
+			generadorPDF = null;
+		}
+		return r;
+	}
+	
 	public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException, ExcepcionMch, JRException, ZipException, InterruptedException {
 		Map<String, Object> p = new HashMap<String, Object> ();
 		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
-		String r = new ActividadGenerarReportesZip().generarReportesZip("facturaSanRafael","sanrafael", p);
+		String r = new ActividadGenerarReportes().generarReportesZip("facturaSanRafael","sanrafael", p);
 		System.out.println(r);
 	}
 }

@@ -14,16 +14,19 @@
 	{
 		"negocio":"SanRafael",
 		"dataBase":"SanRafael",
-		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA"
+		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA",
+		"generarZIP":true
 	},{
 		"negocio":"SoporteMCH",
 		"dataBase":"SanRafael",
-		"correo":"cbeltran@sistematizando.com"
+		"correo":"cbeltran@sistematizando.com",
+		"generarZIP":true
 	},
 	{
 		"negocio":"san",
 		"dataBase":"SanRafael",
-		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA"
+		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA",
+		"generarZIP":true
 	}
 	
 ]
