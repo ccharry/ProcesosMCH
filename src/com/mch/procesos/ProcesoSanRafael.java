@@ -90,7 +90,7 @@ public class ProcesoSanRafael implements Job{
 				}
 
 				String r = invocarProcedimiento(array.getJSONObject(a).getString("remitente"), NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaArchivo = null;
-				if(r.equals("ok")){
+				if(r.contains("ok")){
 					boolean generarZip = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", NEGOCIO).getBoolean("generarZIP");
 					
 					if(generarZip == true){
@@ -99,8 +99,8 @@ public class ProcesoSanRafael implements Job{
 						rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,false, NEGOCIO);
 					}
 					
-					r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
-					enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.",  array.getJSONObject(a), NEGOCIO);
+//					r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
+					enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br>"+r,  array.getJSONObject(a), NEGOCIO);
 
 				}else{
 					enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a), NEGOCIO);
@@ -165,6 +165,7 @@ public class ProcesoSanRafael implements Job{
 		propServicioCargarArchivo.setNegocio(negocio);
 		propServicioCargarArchivo.setTabla(tabla);
 		propServicioCargarArchivo.setDataBase(UtilMCH.getDataBaseName(negocio));
+		System.out.println("La ruta es: "+ruta);
 		return actividadCargarArchivo.cargarArchivosABaseDatos(new File(ruta.getString("ruta")).listFiles(), propServicioCargarArchivo);
 	}
 
