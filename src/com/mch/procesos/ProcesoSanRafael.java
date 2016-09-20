@@ -99,7 +99,7 @@ public class ProcesoSanRafael implements Job{
 						rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,false, NEGOCIO);
 					}
 					
-//					r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
+					r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
 					enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br>"+r,  array.getJSONObject(a), NEGOCIO);
 
 				}else{
@@ -231,6 +231,10 @@ public class ProcesoSanRafael implements Job{
 	 * @throws MessagingException
 	 */
 	private String enviarCorreo(String rutaZip,String mensaje, JSONObject obj, String negocio) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException, MessagingException{
+		System.out.println(obj);
+		if(obj.isNull("remitente") || obj.isNull("asunto")){
+			return null;
+		}
 		insertarLog(negocio, "Envia correo", "San Rafael");
 		rutaZip = (rutaZip+"").replace("null", "").replace(" ", "");
 		if(!rutaZip.equals("")){
