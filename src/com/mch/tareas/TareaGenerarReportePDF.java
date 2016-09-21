@@ -119,11 +119,13 @@ public class TareaGenerarReportePDF {
 		//		System.out.println(ruta+"temporales");
 
 		Map<String, Object> p = new HashMap<String, Object> ();
-		p.put("rutmaImagen", UtilMCH.getRutaProyecto().replace("bin", "imageneHGs"));
+		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
+		System.out.println(p);
 		String a;
 		try {
 			a = new TareaGenerarReportePDF().generarPDF("facturaSanRafael", System.currentTimeMillis(), p, "123", "sanRafael");
 			System.out.println(a);
+			System.out.println(new File(a).length());;
 		} catch (ExcepcionMch e) {
 			e.printStackTrace();
 		}

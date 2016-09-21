@@ -40,29 +40,69 @@ import com.mch.utilidades.UtilMCH;
  */
 public class ProcesoSanRafael implements Job{
 
-	private static String NEGOCIO = "SanRafael";
-	private static String TABLA = "FACTURAS_TEMP";
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 *Negocio con el cual se ejecuta todo el proceso, este 
+	 *es el que se busca en el archivo de propiedades para
+	 *determinar atributos.
+	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+	private static String NEGOCIO = "san";
+
+
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 *Tabla a la cual de va a cargar el archivo excel para
+	 *su posterior validación.
+	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+	private static String TABLA_TEMPORAL = "FACTURAS_TEMP";
+
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 *Nombre del reporte que va a generar las facturas
+	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private static String NOMBRE_REPORTE = "facturaSanRafael";
+
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 *Contraseña del reporte final
+	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private static String PASSWORD_FILE = "sanrafael";
+
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 *Procedimientos usados.
+	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private static String PROCEDIMIENTO_VALIDACIONES = "procValidacionesFacturas";
 	private static String PROCEDIMIENTO_MOVER_A_HISTORICO = "procMoverAHistorico";
 	private static String PROCEDIMIENTO_ELIMINAR_TEMPORAL = "procEliminarTemporal";
+
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 *Nombre del negocio que hay que llamar en caso de 
+	 *ocurrir un error.
+	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private static String SOPORTE = "SoporteMCH";
 
+	
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 * Actividades usadas por el proceso.
+	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private ActividadLeerCorreo actividadLeerCorreo = new ActividadLeerCorreo();
 	private ActividadCargarArchivo actividadCargarArchivo = new ActividadCargarArchivo();
 	private ActividadInvocarProcedimiento actividadInvocarProcedimiento = new ActividadInvocarProcedimiento();
 	private ActividadGenerarReportes actividadGenerarReportesZip = new ActividadGenerarReportes();
 	private ActividadEnviarCorreo actividadEnviarCorreo = new ActividadEnviarCorreo();
+	
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	 * Propiedades necesarias para invocar los diferentes 
+	 * servicio.
+	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private PropiedadServicioCargarArchivo propServicioCargarArchivo = new PropiedadServicioCargarArchivo();
 	private PropiedadServicioInvocarProcedimiento propiedadServicioInvocarProcedimiento = new PropiedadServicioInvocarProcedimiento();
 	private PropiedadServicioEnviarCorreo propiedadServicioEnviarCorreo = new PropiedadServicioEnviarCorreo();
+	
 	private ArchivoBean archivoBean = null;
-
 	private String mensaje = null, rutaArchivosTemporales = null;;
 	private JSONObject objTemp = null;
 
-
+	
+	/**
+	 * Metodo principal del proceso.
+	 */
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		String emailActual = null, asuntoActual = null;
@@ -78,7 +118,7 @@ public class ProcesoSanRafael implements Job{
 				emailActual = array.getJSONObject(a).getString("remitente");
 				asuntoActual = array.getJSONObject(a).getString("asunto");
 
-				mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA);
+				mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA_TEMPORAL);
 				rutaArchivosTemporales = array.getJSONObject(a).getString("ruta");
 				objTemp = new JSONObject(mensaje);
 				if( !objTemp.isNull("errores")){
@@ -92,13 +132,13 @@ public class ProcesoSanRafael implements Job{
 				String r = invocarProcedimiento(array.getJSONObject(a).getString("remitente"), NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaArchivo = null;
 				if(r.contains("ok")){
 					boolean generarZip = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", NEGOCIO).getBoolean("generarZIP");
-					
+
 					if(generarZip == true){
 						rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,true, NEGOCIO);
 					}else{
 						rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,false, NEGOCIO);
 					}
-					
+
 					r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
 					enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br>"+r,  array.getJSONObject(a), NEGOCIO);
 
@@ -165,6 +205,9 @@ public class ProcesoSanRafael implements Job{
 		propServicioCargarArchivo.setNegocio(negocio);
 		propServicioCargarArchivo.setTabla(tabla);
 		propServicioCargarArchivo.setDataBase(UtilMCH.getDataBaseName(negocio));
+		//Se indica que se va a validar el tipado de las celdas del excel contra la definicion
+		//de la tabla a la cual se va a cargar.
+		propServicioCargarArchivo.setValidarTipoDatos(true);
 		System.out.println("La ruta es: "+ruta);
 		return actividadCargarArchivo.cargarArchivosABaseDatos(new File(ruta.getString("ruta")).listFiles(), propServicioCargarArchivo);
 	}
