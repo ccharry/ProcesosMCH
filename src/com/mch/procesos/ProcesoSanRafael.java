@@ -77,7 +77,7 @@ public class ProcesoSanRafael implements Job{
 	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private static String SOPORTE = "SoporteMCH";
 
-	
+
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 * Actividades usadas por el proceso.
 	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -86,7 +86,7 @@ public class ProcesoSanRafael implements Job{
 	private ActividadInvocarProcedimiento actividadInvocarProcedimiento = new ActividadInvocarProcedimiento();
 	private ActividadGenerarReportes actividadGenerarReportesZip = new ActividadGenerarReportes();
 	private ActividadEnviarCorreo actividadEnviarCorreo = new ActividadEnviarCorreo();
-	
+
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 * Propiedades necesarias para invocar los diferentes 
 	 * servicio.
@@ -94,12 +94,12 @@ public class ProcesoSanRafael implements Job{
 	private PropiedadServicioCargarArchivo propServicioCargarArchivo = new PropiedadServicioCargarArchivo();
 	private PropiedadServicioInvocarProcedimiento propiedadServicioInvocarProcedimiento = new PropiedadServicioInvocarProcedimiento();
 	private PropiedadServicioEnviarCorreo propiedadServicioEnviarCorreo = new PropiedadServicioEnviarCorreo();
-	
+
 	private ArchivoBean archivoBean = null;
 	private String mensaje = null, rutaArchivosTemporales = null;;
 	private JSONObject objTemp = null;
 
-	
+
 	/**
 	 * Metodo principal del proceso.
 	 */
@@ -116,35 +116,42 @@ public class ProcesoSanRafael implements Job{
 			}
 			JSONArray array = obj.getJSONArray("info");
 			for(int a = 0 ; a < array.length(); a++){
-				emailActual = array.getJSONObject(a).getString("remitente");
-				asuntoActual = array.getJSONObject(a).getString("asunto");
+				try{
+					emailActual = array.getJSONObject(a).getString("remitente");
+					asuntoActual = array.getJSONObject(a).getString("asunto");
 
-				mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA_TEMPORAL);
-				rutaArchivosTemporales = array.getJSONObject(a).getString("ruta");
-				objTemp = new JSONObject(mensaje);
-				if( !objTemp.isNull("errores")){
-					if(objTemp.getJSONArray("errores").length() > 0){
-						enviarCorreo(null, generarTablaMensaje(objTemp.getJSONArray("errores")), array.getJSONObject(a), NEGOCIO);
-						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
-						continue;
+					mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA_TEMPORAL);
+					rutaArchivosTemporales = array.getJSONObject(a).getString("ruta");
+					objTemp = new JSONObject(mensaje);
+					if( !objTemp.isNull("errores")){
+						if(objTemp.getJSONArray("errores").length() > 0){
+							enviarCorreo(null, generarTablaMensaje(objTemp.getJSONArray("errores")), array.getJSONObject(a), NEGOCIO);
+							invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
+							continue;
+						}
 					}
-				}
 
-				String r = invocarProcedimiento(array.getJSONObject(a).getString("remitente"), NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaArchivo = null;
-				if(r.contains("ok")){
-					boolean generarZip = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", NEGOCIO).getBoolean("generarZIP");
+					String r = invocarProcedimiento(array.getJSONObject(a).getString("remitente"), NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaArchivo = null;
+					if(r.contains("ok")){
+						boolean generarZip = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", NEGOCIO).getBoolean("generarZIP");
 
-					if(generarZip == true){
-						rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,true, NEGOCIO);
+						if(generarZip == true){
+							rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,true, NEGOCIO);
+						}else{
+							rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,false, NEGOCIO);
+						}
+
+						r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
+						enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br>"+r,  array.getJSONObject(a), NEGOCIO);
+
 					}else{
-						rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,false, NEGOCIO);
+						enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a), NEGOCIO);
 					}
-
-					r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
-					enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br>"+r,  array.getJSONObject(a), NEGOCIO);
-
-				}else{
-					enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a), NEGOCIO);
+				}catch(Exception e){
+					enviarCorreo("", "Ha ocurrido un error en el proceso de San Rafael: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! San Rafael"), "SoporteMCH");
+					enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
+					insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "San Rafael");
+					e.printStackTrace();
 				}
 			}
 			if(rutaArchivosTemporales != null){
