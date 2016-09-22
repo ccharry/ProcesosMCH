@@ -45,7 +45,7 @@ public class ProcesoSanRafael implements Job{
 	 *es el que se busca en el archivo de propiedades para
 	 *determinar atributos.
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-	private static String NEGOCIO = "san";
+	private static String NEGOCIO = "SanRafael";
 
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,6 +110,7 @@ public class ProcesoSanRafael implements Job{
 			insertarLog(NEGOCIO, "Inició el proceso de San Rafael", "San Rafael");
 
 			JSONObject obj = actividadLeerCorreo.leerCorreo(NEGOCIO);
+			System.out.println(obj);
 			if(obj.isNull("info")){
 				throw new JobExecutionException(obj.toString());
 			}
@@ -156,8 +157,8 @@ public class ProcesoSanRafael implements Job{
 			insertarLog(NEGOCIO, "Termina proceso sin errores", "San Rafael");
 		} catch (Exception e) {
 			try {
-				enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
 				enviarCorreo("", "Ha ocurrido un error en el proceso de San Rafael: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! San Rafael"), "SoporteMCH");
+				enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
 				insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "San Rafael");
 			} catch (Exception e1) {
 				e1.printStackTrace();
