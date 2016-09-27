@@ -3,7 +3,7 @@
     	"configuracionGeneral":"si",
     	"protocolo":"http",
     	"ipServidor":"192.168.2.5",
-    	"puerto":"8089",
+    	"puerto":"8081",
     	"proyecto":"ServiciosMCH",
     	"servicioEnviarCorreo":"enviarCorreo",
     	"servicioLeerCorreo":"lecturaCorreo",

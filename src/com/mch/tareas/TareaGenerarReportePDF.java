@@ -72,7 +72,8 @@ public class TareaGenerarReportePDF {
 			e.printStackTrace();
 			throw new ExcepcionMch("Ha ocurrido un error al momento de generar el reporte en PDF: "+e.getMessage());
 		}finally{
-			con.setLibre(true);
+			if(con != null)
+				con.setLibre(true);
 		}
 		return ruta;
 	}
