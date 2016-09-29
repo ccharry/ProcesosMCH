@@ -1,4 +1,7 @@
 [
+	{
+		"tiempoEjecucionEnMinutos":2
+	},
     {
     	"configuracionGeneral":"si",
     	"protocolo":"http",

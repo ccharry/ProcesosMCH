@@ -33,7 +33,9 @@ public class TareaCompilarReporte {
 		
 		String origen = ruta+"reportes/"+reporte+"/"+reporte+".jrxml";
 		String destino = ruta+"reportes/"+reporte+"/"+reporte+".jasper";
-		
+//		String origen = "E:\\RepositorioGITPortal\\ProcesosMCH\\reportes\\facturaSanRafael\\facturaSanRafael.jrxml";
+//		String destino = "E:\\RepositorioGITPortal\\ProcesosMCH\\reportes\\facturaSanRafael\\facturaSanRafael.jasper";
+//		
 		System.out.println(origen+"\n"+destino);
 		
 		  try{ 

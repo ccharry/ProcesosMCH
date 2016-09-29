@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="340"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT UPPER(TIPO)TIPO,
@@ -32,7 +32,7 @@ TEXTO
 FROM FACTURAS
 LEFT JOIN COPIAS
 ON 1 = 1
-ORDER BY FACTURA]]>
+ORDER BY CAST(FACTURA AS NUMERIC)]]>
 	</queryString>
 	<field name="TIPO" class="java.lang.String"/>
 	<field name="LOCAL" class="java.lang.String"/>
@@ -355,7 +355,7 @@ ORDER BY FACTURA]]>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TIPO}.equals("C")?"":($F{ADMON} == null ? "-" : $F{ADMON} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{TIPO}.equals("C")? "" :( ($F{ADMON}+"").equals(new BigDecimal(0).toString()+".00") ? "-" : $F{ADMON})]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
 				<reportElement x="410" y="255" width="78" height="11" uuid="e6e8e17c-da20-405a-af95-58991e3cbffa"/>
@@ -383,8 +383,7 @@ ORDER BY FACTURA]]>
 				<textElement>
 					<font fontName="Arial" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TIPO}.equals("C")?"":"Administración"
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{TIPO}.equals("C")?"":"Administración"]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="158">

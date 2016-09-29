@@ -26,7 +26,14 @@ public class UtilMCH {
 
 	public static String getRutaProyecto() {
 		if(ruta == null){
-			ruta = UtilMCH.class.getClassLoader().getResource("").getPath().replace("/classes", "").replace("/WEB-INF", "").replaceFirst("/", "");
+//			ruta = UtilMCH.class.getClassLoader().getResource("").getPath().replace("/classes", "").replace("/WEB-INF", "").replaceFirst("/", "");
+//			System.out.println("------------.................................---------");
+//			ClassLoader loader = UtilMCH.class.getClassLoader();
+//	        System.out.println(loader.getResource("utilidades/UtilMCH.class"));
+			File f = new File(System.getProperty("java.class.path"));
+		    File dir = f.getAbsoluteFile().getParentFile();
+		    String path = dir.toString();
+		    ruta = (path+"/ProcesosMCH/bin/");
 		}
 		if(!ruta.contains(":")){
 			ruta = "/"+ruta;
@@ -45,6 +52,7 @@ public class UtilMCH {
 		File f = null, ft = null;
 		String ruta = UtilMCH.getRutaProyecto()+"/"+carptaTemp+"/temporal_"+time+"/"+nombreArchivo,
 				rutaTemp = UtilMCH.getRutaProyecto()+"/"+carptaTemp+"/temporal_"+time;
+		
 		if(replaceBin == true){
 			ruta = ruta.replace("bin/", "");
 			rutaTemp = rutaTemp.replace("bin/", "");
