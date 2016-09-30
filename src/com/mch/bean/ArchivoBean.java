@@ -6,8 +6,9 @@ import java.io.File;
  * @author Camilo
  * 05/09/2016
  */
-public class ArchivoBean {
+public class ArchivoBean implements java.io.Serializable{
 
+	private static final long serialVersionUID = 3513786889629026748L;
 	private String nombreArchivo;
 	private File archivo;
 

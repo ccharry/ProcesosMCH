@@ -36,7 +36,7 @@ public class TareaCompilarReporte {
 //		String origen = "E:\\RepositorioGITPortal\\ProcesosMCH\\reportes\\facturaSanRafael\\facturaSanRafael.jrxml";
 //		String destino = "E:\\RepositorioGITPortal\\ProcesosMCH\\reportes\\facturaSanRafael\\facturaSanRafael.jasper";
 //		
-		System.out.println(origen+"\n"+destino);
+//		System.out.println(origen+"\n"+destino);
 		
 		  try{ 
 		      JasperCompileManager.compileReportToFile(origen,destino);

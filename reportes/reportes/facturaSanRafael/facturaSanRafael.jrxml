@@ -22,9 +22,10 @@ TOTAL,
 ADMON,
 VALOR_POR_RECAUDAR,
 CASE WHEN TIPO = 'C'
-THEN 'Prima periódica de Uso y Explotación del Local '+LOCAL+' del Centro Comercial Paseo San Rafael - '+
-(CASE WHEN OBSERVACION != NULL THEN OBSERVACION ELSE DATENAME(DAY, FECHA)+' días de '+DATENAME(MONTH, FECHA)+' '+DATENAME(YEAR, FECHA)END)
-ELSE 'Arrendamiento del local '+LOCAL+' del Centro Comercial Paseo San Rafael - Periodo '+DATENAME(MONTH, FECHA)+' '+DATENAME(YEAR, FECHA) END CONCEPTO,
+THEN 'Prima periódica de Uso y Explotación del Local '+LOCAL+' del Centro Comercial Paseo San Rafael'+
+     (CASE WHEN LEN(RTRIM(OBSERVACION)) > 4 THEN ' - '+OBSERVACION ELSE '' END)
+ELSE 'Arrendamiento del local '+LOCAL+' del Centro Comercial Paseo San Rafael'+
+     (CASE WHEN LEN(RTRIM(OBSERVACION)) > 4 THEN ' - '+OBSERVACION ELSE '' END) END CONCEPTO,
 DFECSIST,
 EMAIL_USUARIO,
 NORDEN,
@@ -32,7 +33,8 @@ TEXTO
 FROM FACTURAS
 LEFT JOIN COPIAS
 ON 1 = 1
-ORDER BY CAST(FACTURA AS NUMERIC)]]>
+ORDER BY CAST(FACTURA AS NUMERIC)
+]]>
 	</queryString>
 	<field name="TIPO" class="java.lang.String"/>
 	<field name="LOCAL" class="java.lang.String"/>
@@ -348,7 +350,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[( $F{TOTAL} == null ? "-" : $F{TOTAL} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[( $F{PRIMA} == null ? "-" : $F{PRIMA} )]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
 				<reportElement x="418" y="76" width="64" height="20" uuid="df5617a6-ded0-4ed2-88b2-36b346c51332"/>
