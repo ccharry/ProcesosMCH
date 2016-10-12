@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
-	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="340"/>
+	<property name="ireport.zoom" value="3.536921536500002"/>
+	<property name="ireport.x" value="706"/>
+	<property name="ireport.y" value="395"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT UPPER(TIPO)TIPO,
+		<![CDATA[SELECT
+(SELECT DESDE FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) DESDE,
+(SELECT HASTA FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) HASTA,
+(SELECT PREFIJO FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) PREFIJO,
+(SELECT FORMAT(FECHA,'yyyy-MM-dd') FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) FECHAR,
+(SELECT NO_RESOLUCION FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) NO_RESOLUCION,
+UPPER(TIPO)TIPO,
 LOCAL,
 FACTURA,
 STUFF(CONVERT(VARCHAR(12), FECHA, 107), 1,3,DATENAME(month,FECHA))FECHA,
@@ -36,6 +42,11 @@ ON 1 = 1
 ORDER BY CAST(FACTURA AS NUMERIC)
 ]]>
 	</queryString>
+	<field name="DESDE" class="java.math.BigDecimal"/>
+	<field name="HASTA" class="java.math.BigDecimal"/>
+	<field name="PREFIJO" class="java.lang.String"/>
+	<field name="FECHAR" class="java.lang.String"/>
+	<field name="NO_RESOLUCION" class="java.lang.String"/>
 	<field name="TIPO" class="java.lang.String"/>
 	<field name="LOCAL" class="java.lang.String"/>
 	<field name="FACTURA" class="java.lang.String"/>
@@ -132,27 +143,6 @@ ORDER BY CAST(FACTURA AS NUMERIC)
 				</textElement>
 				<text><![CDATA[ACTIVIDAD ECONOMICA 7010. TARIFA 9.66 x 1000]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="366" y="105" width="131" height="15" uuid="4297bdaf-1b02-4dcf-b51b-cff4acedaef2"/>
-				<textElement textAlignment="Right">
-					<font fontName="Arial" size="5" isBold="false" pdfFontName="Helvetica"/>
-				</textElement>
-				<text><![CDATA[RESOLUCIÓN DIAN No. 310000081826]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="366" y="113" width="131" height="15" uuid="99a25845-b766-4a9f-9c76-ac45c5762a1e"/>
-				<textElement textAlignment="Right">
-					<font fontName="Arial" size="5" isBold="false" pdfFontName="Helvetica"/>
-				</textElement>
-				<text><![CDATA[FECHA: 2014/11/28]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="366" y="122" width="131" height="15" uuid="bb74779b-cdab-452f-9b98-eae7c0d286a1"/>
-				<textElement textAlignment="Right">
-					<font fontName="Arial" size="5" isBold="false" pdfFontName="Helvetica"/>
-				</textElement>
-				<text><![CDATA[FACTURAS DEL No. PAGF - 8001 AL PAGF - 10000]]></text>
-			</staticText>
 			<image>
 				<reportElement key="image-1" mode="Transparent" x="0" y="0" width="100" height="20" uuid="8557815c-3a09-4bb8-8c9c-263dd59b3d1f"/>
 				<box>
@@ -169,6 +159,27 @@ ORDER BY CAST(FACTURA AS NUMERIC)
 					<font fontName="Arial" size="13"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{FACTURA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="367" y="105" width="131" height="11" uuid="e0718af4-93fe-4508-9a09-c73845bf09be"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RESOLUCIÓN DIAN No. "+$F{NO_RESOLUCION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="367" y="113" width="131" height="11" uuid="d192f2af-45d0-4239-87bd-2b47cd268878"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FECHA: "+$F{FECHAR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="367" y="121" width="131" height="11" uuid="5281af51-e562-41a9-b294-ad633938aac0"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FACTURAS DEL No. "+$F{PREFIJO}+" - "+$F{DESDE}+" AL "+$F{PREFIJO}+" - "+$F{HASTA}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
