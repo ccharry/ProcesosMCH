@@ -10,11 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.json.JSONException;
-
-import com.mch.propiedades.servicios.PropiedadServicioCargarArchivo;
-
 
 /**
  * @author Camilo
@@ -26,14 +22,18 @@ public class UtilMCH {
 
 	public static String getRutaProyecto() {
 		if(ruta == null){
-//			ruta = UtilMCH.class.getClassLoader().getResource("").getPath().replace("/classes", "").replace("/WEB-INF", "").replaceFirst("/", "");
-//			System.out.println("------------.................................---------");
-//			ClassLoader loader = UtilMCH.class.getClassLoader();
-//	        System.out.println(loader.getResource("utilidades/UtilMCH.class"));
+			//			ruta = UtilMCH.class.getClassLoader().getResource("").getPath().replace("/classes", "").replace("/WEB-INF", "").replaceFirst("/", "");
+			//			System.out.println("------------.................................---------");
+			//			ClassLoader loader = UtilMCH.class.getClassLoader();
+			//	        System.out.println(loader.getResource("utilidades/UtilMCH.class"));
 			File f = new File(System.getProperty("java.class.path"));
-		    File dir = f.getAbsoluteFile().getParentFile();
-		    String path = dir.toString();
-		    ruta = (path+"/ProcesosMCH/bin/");
+			File dir = f.getAbsoluteFile().getParentFile();
+			String path = dir.toString();
+			if(path.split(";").length > 2){
+				ruta = path.substring(0, path.indexOf(";"))+"/reportes/";
+			}else{
+				ruta = (path+"/ProcesosMCH/bin/");
+			}
 		}
 		if(!ruta.contains(":")){
 			ruta = "/"+ruta;
@@ -52,7 +52,7 @@ public class UtilMCH {
 		File f = null, ft = null;
 		String ruta = UtilMCH.getRutaProyecto()+"/"+carptaTemp+"/temporal_"+time+"/"+nombreArchivo,
 				rutaTemp = UtilMCH.getRutaProyecto()+"/"+carptaTemp+"/temporal_"+time;
-		
+
 		if(replaceBin == true){
 			ruta = ruta.replace("bin/", "");
 			rutaTemp = rutaTemp.replace("bin/", "");
@@ -100,16 +100,17 @@ public class UtilMCH {
 	public static String getDataBaseName(String negocio) throws JSONException, IOException{
 		return UtilLecturaPropiedades.getInstancia().getPropJson("negocio", negocio).getString("dataBase");
 	}
-	
+
 	public static String getEmailSoporte(String negocio) throws JSONException, IOException{
 		return UtilLecturaPropiedades.getInstancia().getPropJson("negocio", negocio).getString("correo");
 	}
 
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
-		PropiedadServicioCargarArchivo prop = new PropiedadServicioCargarArchivo();
-		prop.setDataBase("SanRafael");
-		prop.setTabla("FACTURAS_TEMP");
-		Map<String, Object> ob = generarMapPorPropiedad(prop);
-		System.out.println(ob);
+		//		PropiedadServicioCargarArchivo prop = new PropiedadServicioCargarArchivo();
+		//		prop.setDataBase("SanRafael");
+		//		prop.setTabla("FACTURAS_TEMP");
+		//		Map<String, Object> ob = generarMapPorPropiedad(prop);
+		//		System.out.println(ob);
+		System.out.println(getRutaProyecto());
 	}
 }

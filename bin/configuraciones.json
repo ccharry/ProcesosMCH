@@ -12,24 +12,25 @@
     	"servicioLeerCorreo":"lecturaCorreo",
     	"servicioCargarArchivoExcel":"cargarArchivo",
     	"servicioInvocarProcedimiento":"invocarProcedimiento",
-    	"servicioInsertarLog":"insertarLog"
+    	"servicioInsertarLog":"insertarLog",
+    	"servicioPing":"ping"
     },
 	{
 		"negocio":"SanRafael",
 		"dataBase":"SanRafael",
 		"rutaDescarga":"\\\\192.168.2.5\\C$\\ARCHIVOS_EMAIL",
-		"generarZIP":true
+		"generarZIP":false
 	},{
 		"negocio":"SoporteMCH",
 		"dataBase":"SanRafael",
-		"correo":"cbeltran@sistematizando.com",
-		"generarZIP":true
+		"correo":"soportesanrafael@sistematizando.com",
+		"generarZIP":false
 	},
 	{
 		"negocio":"san",
 		"dataBase":"SanRafael",
 		"rutaDescarga":"\\\\192.168.1.27\\E$\\ARCHIVOS_DESCARGA_PRUEBA",
-		"generarZIP":true
+		"generarZIP":false
 	}
 	
 ]
