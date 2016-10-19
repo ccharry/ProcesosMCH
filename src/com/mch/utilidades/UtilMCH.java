@@ -25,11 +25,18 @@ public class UtilMCH {
 	private static String ruta = null;
 
 	public static String getRutaProyecto() {
+		try {
+
+		 File miDir = new File (".");
 		if(ruta == null){
-			ruta = UtilMCH.class.getClassLoader().getResource("").getPath().replace("/classes", "").replace("/WEB-INF", "").replaceFirst("/", "");
+			ruta = miDir.getCanonicalPath()+"\bin";
 		}
 		if(!ruta.contains(":")){
-			ruta = "/"+ruta;
+		ruta = "/"+ruta;
+		} 
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return ruta;
 	}
@@ -99,6 +106,7 @@ public class UtilMCH {
 
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException {
 		PropiedadServicioCargarArchivo prop = new PropiedadServicioCargarArchivo();
+		System.out.println(ruta);
 		prop.setDataBase("SanRafael");
 		prop.setTabla("FACTURAS_TEMP");
 		Map<String, Object> ob = generarMapPorPropiedad(prop);
