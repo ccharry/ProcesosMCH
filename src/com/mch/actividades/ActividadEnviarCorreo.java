@@ -58,6 +58,7 @@ public class ActividadEnviarCorreo extends TareaEnviarArchivoRest{
 		}
 		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(prop);
 		String s = generarRutaPeticion("servicioEnviarCorreo", p);
+		System.out.println(s);
 		return enviarArchivo(s , prop.getArchivos());
 	}
 
@@ -67,7 +68,7 @@ public class ActividadEnviarCorreo extends TareaEnviarArchivoRest{
 		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/0-convenciones_codigo_java.pdf")));
 		archivos.add(new ArchivoBean(new File("C:/Users/MCH sistematizando/Downloads/03163695394 RECAUDO JUNIO 2016.csv")));
 		a.setAsunto("Probando envío de correo")
-		.setDestinatario("ccamilo2303@gmcom.com")
+		.setDestinatario("ccamilo2303@gmail.com")
 		.setMensaje("<h1>PRUEBA2</h1><p>Hola como está...........asdfasdf...................., esto es uns PRUEBA desde Java</p><br><h2 style='background:red'>prueba STYLE</h2>")
 		.setArchivos(null);
 		a.setNegocio("SanRafael");

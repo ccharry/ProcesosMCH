@@ -132,6 +132,7 @@ public class ProcesoSanRafael implements Job{
 					}
 
 					String r = invocarProcedimiento(array.getJSONObject(a).getString("remitente"), NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaArchivo = null;
+					System.out.println("RETORNO DEL PROCEDIMIENTO: "+r);
 					if(r.contains("ok")){
 						boolean generarZip = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", NEGOCIO).getBoolean("generarZIP");
 
@@ -141,11 +142,12 @@ public class ProcesoSanRafael implements Job{
 							rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,false, NEGOCIO);
 						}
 
-						r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
-						enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br>"+r,  array.getJSONObject(a), NEGOCIO);
+						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
+						enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br><p>"+r+"</p>",  array.getJSONObject(a), NEGOCIO);
 
 					}else{
 						enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a), NEGOCIO);
+						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
 					}
 				}catch(Exception e){
 					enviarCorreo("", "Ha ocurrido un error en el proceso de San Rafael: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! San Rafael"), "SoporteMCH");
@@ -167,6 +169,7 @@ public class ProcesoSanRafael implements Job{
 				enviarCorreo("", "Ha ocurrido un error en el proceso de San Rafael: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! San Rafael"), "SoporteMCH");
 				enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
 				insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "San Rafael");
+				invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				throw new JobExecutionException(e1);
@@ -360,6 +363,8 @@ public class ProcesoSanRafael implements Job{
 		propiedadServicioInsertarLog.setProceso(proceso);
 		propiedadServicioInsertarLog.setNegocio(negocio);
 		JSONObject a = new JSONObject(ActividadInsertar.log(propiedadServicioInsertarLog));
+		System.out.println(",,,,,,,,,,,,,,,,,,,,,,,,,,, LOG ,,,,,,,,,,,,,,,,,,,,,,,");
+		System.out.println(a);
 		if(!a.isNull("error"))
 			throw new ExcepcionMch(a.toString());
 	}

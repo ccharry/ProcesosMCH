@@ -47,14 +47,18 @@ public class TareaGenerarReportePDF {
 	public String generarPDF(String nombreReporte, long time, Map<String, Object>parametros) throws ExcepcionMch {
 
 		String ruta = UtilMCH.getRutaProyecto().replace("bin/", "");
+		
 		ruta = ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jasper";
 		try {
 			File file = new File(ruta);
+			
 			if(file.isFile() == false){
 				throw new ExcepcionMch("No se encontro el reporte "+nombreReporte+", recuerde que el nombre de la carpeta debe ser igual al nombre del reporte.");
 			}
 			con = PoolInstanciasConexion.getInstancia().getConexionLibre("SanRafael");
 			byte[] bytes;
+			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			System.out.println(parametros+" ---- "+con.getCon());
 			bytes = JasperRunManager.runReportToPdf(ruta, parametros, con.getCon());
 			InputStream in = new ByteArrayInputStream(bytes);
 			ruta = UtilMCH.escribirArchivoTemporalDesdeInputStream(nombreReporte+".pdf", in, "temporales", true, time);
