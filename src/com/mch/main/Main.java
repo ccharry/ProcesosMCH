@@ -19,6 +19,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.mch.excepciones.ExcepcionMch;
+import com.mch.procesos.ProcesoFacturacionMch;
 import com.mch.procesos.ProcesoSanRafael;
 import com.mch.tareas.TareaCompilarReporte;
 import com.mch.tareas.TareaGenerarRutaPeticion;
@@ -49,7 +50,7 @@ public class Main {
 		Map<String, Object> o = new HashMap<String, Object>();
 		o.put("dataBase", "SanRafael");
 		o.put("negocio", "SanRafael");
-		String reporte = "facturaSanRafael", rutaPing = null;
+		String reporte = "facturaSanRafael", reporte2 = "facturaMch", rutaPing = null;
 		
 		boolean v = new File(UtilMCH.getRutaProyecto().replace("bin/", "")).isDirectory();
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
@@ -71,6 +72,7 @@ public class Main {
 		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Rotorno Ping: "+r);
 		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Compilado reporte:");
 		Logger.getLogger(Main.class.getName()).log(Level.INFO, compilar.compilar(reporte));
+		Logger.getLogger(Main.class.getName()).log(Level.INFO, compilar.compilar(reporte2));
 		int tiempo = UtilLecturaPropiedades.getInstancia().getPropJson("tiempoEjecucionEnMinutos").getInt("tiempoEjecucionEnMinutos");
 		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Tiempo de ejecucion en minutos: "+tiempo);
 		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Esta configuracion se puede modificar en el archivo configuraciones.json que está dentro del JAR");
@@ -79,13 +81,17 @@ public class Main {
 
 
 		JobDetail job = JobBuilder.newJob(ProcesoSanRafael.class).withIdentity("procesoSanRafael", "group1").build();
-		Trigger trigger = TriggerBuilder.newTrigger()
-				.withIdentity("triggerProcesoSanRafael", "group1")
-				.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo).repeatForever())
+		Trigger trigger = TriggerBuilder.newTrigger() .withIdentity("triggerProcesoSanRafael", "group1") .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo).repeatForever()).build();
+		
+		JobDetail job2 = JobBuilder.newJob(ProcesoFacturacionMch.class).withIdentity("procesoFacturacion", "group2").build();
+		Trigger trigger2 = TriggerBuilder.newTrigger()
+				.withIdentity("triggerProcesoFacturacion", "group2")
+				.withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo+1).repeatForever())
 				.build();
 
 		Scheduler scheduler = new StdSchedulerFactory().getScheduler();
 		scheduler.start();
 		scheduler.scheduleJob(job, trigger);
+		scheduler.scheduleJob(job2, trigger2);
 	}
 }

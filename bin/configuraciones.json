@@ -20,7 +20,14 @@
 		"dataBase":"SanRafael",
 		"rutaDescarga":"\\\\192.168.2.5\\C$\\ARCHIVOS_EMAIL",
 		"generarZIP":false
-	},{
+	},
+	{
+		"negocio":"FacturacionMch",
+		"dataBase":"MCH",
+		"rutaDescarga":"\\\\192.168.2.5\\C$\\ARCHIVOS_EMAIL",
+		"generarZIP":false
+	},
+	{
 		"negocio":"SoporteMCH",
 		"dataBase":"SanRafael",
 		"correo":"soportesanrafael@sistematizando.com",

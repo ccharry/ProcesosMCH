@@ -34,19 +34,21 @@ import com.mch.propiedades.servicios.PropiedadServicioInsertarLog;
 import com.mch.propiedades.servicios.PropiedadServicioInvocarProcedimiento;
 import com.mch.utilidades.UtilLecturaPropiedades;
 import com.mch.utilidades.UtilMCH;
+
 /**
  * @author Camilo
- * 13/09/2016
+ * 25/10/2016
  */
-public class ProcesoSanRafael implements Job{
+public class ProcesoFacturacionMch  implements Job{
+
+	//---------------- <CONFIGURACIONES INICIALES> -------------------//
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 *Negocio con el cual se ejecuta todo el proceso, este 
 	 *es el que se busca en el archivo de propiedades para
 	 *determinar atributos.
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-	private static String NEGOCIO = "SanRafael";
-
+	private static String NEGOCIO = "FacturacionMch";
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 *Tabla a la cual de va a cargar el archivo excel para
@@ -57,19 +59,14 @@ public class ProcesoSanRafael implements Job{
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 *Nombre del reporte que va a generar las facturas
 	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-	private static String NOMBRE_REPORTE = "facturaSanRafael";
-
-	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	 *Contraseña del reporte final
-	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-	private static String PASSWORD_FILE = "sanrafael";
+	private static String NOMBRE_REPORTE = "facturaMch";
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 *Procedimientos usados.
 	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private static String PROCEDIMIENTO_VALIDACIONES = "procValidacionesFacturas";
-	private static String PROCEDIMIENTO_MOVER_A_HISTORICO = "procMoverAHistorico";
-	private static String PROCEDIMIENTO_ELIMINAR_TEMPORAL = "procEliminarTemporal";
+	private static String PROCEDIMIENTO_ELIMINAR_TEMPORAL = "procDisable";
+
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 *Nombre del negocio que hay que llamar en caso de 
@@ -77,6 +74,10 @@ public class ProcesoSanRafael implements Job{
 	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private static String SOPORTE = "SoporteMCH";
 
+	//----------------------------------------------------------------//	
+
+
+	//------------ <CONFIGURACIONES LLAMADO SERVICIOS> ---------------//
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 * Actividades usadas por el proceso.
@@ -94,6 +95,7 @@ public class ProcesoSanRafael implements Job{
 	private PropiedadServicioCargarArchivo propServicioCargarArchivo = new PropiedadServicioCargarArchivo();
 	private PropiedadServicioInvocarProcedimiento propiedadServicioInvocarProcedimiento = new PropiedadServicioInvocarProcedimiento();
 	private PropiedadServicioEnviarCorreo propiedadServicioEnviarCorreo = new PropiedadServicioEnviarCorreo();
+	//----------------------------------------------------------------//	
 
 	private ArchivoBean archivoBean = null;
 	private String mensaje = null, rutaArchivosTemporales = null;;
@@ -107,7 +109,7 @@ public class ProcesoSanRafael implements Job{
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		String emailActual = null, asuntoActual = null;
 		try {
-			insertarLog(NEGOCIO, "Inició el proceso de San Rafael", "San Rafael");
+			insertarLog(NEGOCIO, "Inició el proceso de Facturación", "Facturación");
 
 			JSONObject obj = actividadLeerCorreo.leerCorreo(NEGOCIO);
 			System.out.println(obj);
@@ -121,38 +123,39 @@ public class ProcesoSanRafael implements Job{
 					asuntoActual = array.getJSONObject(a).getString("asunto");
 
 					mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA_TEMPORAL);
+					System.out.println(mensaje);
+					
 					rutaArchivosTemporales = array.getJSONObject(a).getString("ruta");
 					objTemp = new JSONObject(mensaje);
-					if( !objTemp.isNull("errores")){
-						if(objTemp.getJSONArray("errores").length() > 0){
-							enviarCorreo(null, generarTablaMensaje(objTemp.getJSONArray("errores")), array.getJSONObject(a), NEGOCIO);
-							invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
-							continue;
-						}
+					if( !objTemp.isNull("errores") && objTemp.getJSONArray("errores").length() > 0){
+						enviarCorreo(null, generarTablaMensaje(objTemp.getJSONArray("errores")), array.getJSONObject(a), NEGOCIO);
+						//invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
+						continue;
 					}
 
-					String r = invocarProcedimiento(array.getJSONObject(a).getString("remitente"), NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaArchivo = null;
+					String r = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_VALIDACIONES).trim().toLowerCase(), rutaArchivo = null;
 					System.out.println("RETORNO DEL PROCEDIMIENTO: "+r);
+				
 					if(r.contains("ok")){
 						boolean generarZip = UtilLecturaPropiedades.getInstancia().getPropJson("negocio", NEGOCIO).getBoolean("generarZIP");
 
 						if(generarZip == true){
-							rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,true, NEGOCIO);
+							rutaArchivo = generarReporte(NOMBRE_REPORTE, NEGOCIO);
 						}else{
-							rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,false, NEGOCIO);
+							rutaArchivo = generarReporte(NOMBRE_REPORTE, NEGOCIO);
 						}
-
-						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
+						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
+						//						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
 						enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br><p>"+r+"</p>",  array.getJSONObject(a), NEGOCIO);
 
 					}else{
 						enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a), NEGOCIO);
-						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
+						//invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
 					}
 				}catch(Exception e){
-					enviarCorreo("", "Ha ocurrido un error en el proceso de San Rafael: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! San Rafael"), "SoporteMCH");
+					enviarCorreo("", "Ha ocurrido un error en el proceso de Facturación: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! Facturación"), "SoporteMCH");
 					enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
-					insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "San Rafael");
+					insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "Facturación");
 					e.printStackTrace();
 				}
 			}
@@ -163,13 +166,13 @@ public class ProcesoSanRafael implements Job{
 
 				}
 			}
-			insertarLog(NEGOCIO, "Termina proceso sin errores", "San Rafael");
+			insertarLog(NEGOCIO, "Termina proceso sin errores", "Facturación");
 		} catch (Exception e) {
 			try {
-				enviarCorreo("", "Ha ocurrido un error en el proceso de San Rafael: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! San Rafael"), "SoporteMCH");
+				enviarCorreo("", "Ha ocurrido un error en el proceso de Facturación: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! Facturación"), "SoporteMCH");
 				enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
-				insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "San Rafael");
-				invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
+				insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "Facturación");
+				//invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				throw new JobExecutionException(e1);
@@ -259,15 +262,10 @@ public class ProcesoSanRafael implements Job{
 	 * @throws ZipException
 	 * @throws InterruptedException
 	 */
-	private String generarReporte(String nombreReporte, String pass, boolean generarZip, String negocio) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
-		String r = null;
+	private String generarReporte(String nombreReporte,  String negocio) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
 		Map<String, Object> p = new HashMap<String, Object> ();
 		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes/imagenes/"));
-		if(generarZip)
-			r = actividadGenerarReportesZip.generarReportesZip(nombreReporte,pass, p,  UtilMCH.getDataBaseName(negocio));
-		else
-			r = actividadGenerarReportesZip.generarReporte(nombreReporte, pass, p, UtilMCH.getDataBaseName(negocio));
-		return r;
+		return actividadGenerarReportesZip.generarReporte(nombreReporte,"MCH", p, UtilMCH.getDataBaseName(negocio));
 	}
 
 	/**
@@ -289,7 +287,7 @@ public class ProcesoSanRafael implements Job{
 		if(obj.isNull("remitente") || obj.isNull("asunto")){
 			return null;
 		}
-		insertarLog(negocio, "Envia correo", "San Rafael");
+		insertarLog(negocio, "Envia correo", "Facturación");
 		rutaZip = (rutaZip+"").replace("null", "").replace(" ", "");
 		if(!rutaZip.equals("")){
 			List<ArchivoBean> archivos = new ArrayList<ArchivoBean>();
@@ -373,8 +371,9 @@ public class ProcesoSanRafael implements Job{
 		//		String a = "\\192.168.2.5\\C$\\TOMCAT_7\\webapps\\ServiciosMCH\\temporales\\20160913-1473802099989";
 		//		a = a.substring(0, a.lastIndexOf("\\"));
 		//		System.out.println(a);
-		ProcesoSanRafael p = new ProcesoSanRafael();
-		p.execute(null);
+		ProcesoFacturacionMch p = new ProcesoFacturacionMch();
+		p.generarReporte("facturaMch", "FacturacionMch");
+//		p.execute(null);
 		//		JSONObject o = new JSONObject();
 		//		o.put("asunto", "hola");
 		//		System.out.println(o);
@@ -383,4 +382,5 @@ public class ProcesoSanRafael implements Job{
 		//		a = a.substring(0, a.lastIndexOf("\\"));
 		//		System.out.println(a);
 	}
+
 }

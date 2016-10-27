@@ -44,18 +44,21 @@ public class TareaGenerarReportePDF {
 	 * @throws JRException
 	 * @throws IOException
 	 */
-	public String generarPDF(String nombreReporte, long time, Map<String, Object>parametros) throws ExcepcionMch {
+	public String generarPDF(String nombreReporte, long time, Map<String, Object>parametros, String DB) throws ExcepcionMch {
 
-		String ruta = UtilMCH.getRutaProyecto().replace("bin/", "");
+		String ruta = UtilMCH.getRutaProyecto().replace("bin", "reportes");
 		
-		ruta = ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jasper";
+		ruta = ruta+"/reportes/"+nombreReporte+"/"+nombreReporte+".jasper";
+		
 		try {
 			File file = new File(ruta);
+			System.out.println("-----------------------------------------------");
+			System.out.println(file);
 			
 			if(file.isFile() == false){
 				throw new ExcepcionMch("No se encontro el reporte "+nombreReporte+", recuerde que el nombre de la carpeta debe ser igual al nombre del reporte.");
 			}
-			con = PoolInstanciasConexion.getInstancia().getConexionLibre("SanRafael");
+			con = PoolInstanciasConexion.getInstancia().getConexionLibre(DB);
 			byte[] bytes;
 			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			System.out.println(parametros+" ---- "+con.getCon());
@@ -86,14 +89,15 @@ public class TareaGenerarReportePDF {
 	public String generarPDF(String nombreReporte, long time, Map<String, Object>parametros, String pass, String DB) throws ExcepcionMch {
 		long t = System.currentTimeMillis();
 
-		String ruta = UtilMCH.getRutaProyecto().replace("bin/", ""),
+		String ruta = UtilMCH.getRutaProyecto().replace("bin", "reportes/"),
 				ruta2 = ruta+"temporales/temporal_"+t+"/";
 		try {
 
 			new File(ruta2).mkdir();
-			JasperReport jr=JasperCompileManager.compileReport(ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jrxml");
-			JasperPrint jp;
-			jp = JasperFillManager.fillReport(jr,parametros,PoolInstanciasConexion.getInstancia().getConexionLibre(DB).getCon());
+//			JasperReport jr=JasperCompileManager.compileReport(ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jrxml");
+//			JasperReport jr=JasperCompileManager.compileReport(ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jrxml");
+			JasperPrint jp = JasperFillManager.fillReport(ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jasper",parametros,PoolInstanciasConexion.getInstancia().getConexionLibre(DB).getCon());;
+			jp.setName("");
 			JRPdfExporter exporter = new JRPdfExporter();       
 			exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
 			exporter.setParameter(JRExporterParameter.OUTPUT_FILE,new File(ruta2+nombreReporte+".pdf"));
@@ -128,7 +132,8 @@ public class TareaGenerarReportePDF {
 		System.out.println(p);
 		String a;
 		try {
-			a = new TareaGenerarReportePDF().generarPDF("facturaSanRafael", System.currentTimeMillis(), p, "123", "sanRafael");
+			//tring nombreReporte, long time, Map<String, Object>parametros
+			a = new TareaGenerarReportePDF().generarPDF("facturaSanRafael", 123, p, "sanRafael");
 			System.out.println(a);
 			System.out.println(new File(a).length());;
 		} catch (ExcepcionMch e) {

@@ -30,7 +30,8 @@ public class UtilMCH {
 			File dir = f.getAbsoluteFile().getParentFile();
 			String path = dir.toString();
 			if(path.split(";").length > 2){
-				ruta = path.substring(0, path.indexOf(";"))+"/reportes/";
+//				ruta = path.substring(0, path.indexOf(";"))+"/reportes/";
+				ruta = path.substring(0, path.indexOf(";"));
 			}else{
 				ruta = (path+"/ProcesosMCH/bin/");
 			}

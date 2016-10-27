@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
-	<property name="ireport.zoom" value="3.536921536500002"/>
-	<property name="ireport.x" value="706"/>
-	<property name="ireport.y" value="395"/>
+	<property name="ireport.zoom" value="2.4157650000000013"/>
+	<property name="ireport.x" value="124"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
@@ -39,8 +39,7 @@ TEXTO
 FROM FACTURAS
 LEFT JOIN COPIAS
 ON 1 = 1
-ORDER BY CAST(FACTURA AS NUMERIC)
-]]>
+ORDER BY CAST(FACTURA AS NUMERIC)]]>
 	</queryString>
 	<field name="DESDE" class="java.math.BigDecimal"/>
 	<field name="HASTA" class="java.math.BigDecimal"/>

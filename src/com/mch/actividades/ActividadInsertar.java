@@ -42,9 +42,9 @@ public class ActividadInsertar{
 	}
 	public static void main(String[] args) throws JSONException, IllegalArgumentException, IllegalAccessException, IOException, ExcepcionMch {
 		PropiedadServicioInsertarLog a = new PropiedadServicioInsertarLog();
-		a.setDataBase("SanRafael");
+		a.setDataBase("MCH");
 		a.setMensaje("PRUEBA!");
-		a.setNegocio("SanRafael");
+		a.setNegocio("FacturacionMch");
 		a.setProceso("PRUEBA!");
 		ActividadInsertar.log(a);
 	}

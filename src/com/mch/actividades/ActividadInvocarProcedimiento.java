@@ -42,9 +42,9 @@ public class ActividadInvocarProcedimiento extends TareaGenerarRutaPeticion{
 	public static void main(String[] args) {
 		ActividadInvocarProcedimiento acProcedimiento = new ActividadInvocarProcedimiento();
 		PropiedadServicioInvocarProcedimiento procedimiento  = new PropiedadServicioInvocarProcedimiento();
-		procedimiento.setNegocio("SanRafael");
-		procedimiento.setDataBase("SanRafael");
-		procedimiento.setProcedimiento("procEliminarTemporal");
+		procedimiento.setNegocio("FacturacionMch");
+		procedimiento.setDataBase("MCH");
+		procedimiento.setProcedimiento("procDisable");
 		procedimiento.setParametros("");
 		try {
 			System.out.println(acProcedimiento.invocarProcedimiento(procedimiento));

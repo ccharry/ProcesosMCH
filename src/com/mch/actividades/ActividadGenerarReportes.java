@@ -33,14 +33,14 @@ public class ActividadGenerarReportes {
 	 * @throws ZipException
 	 * @throws InterruptedException
 	 */
-	public String generarReportesZip(String nombreReporte, String pass, Map<String, Object> p) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
+	public String generarReportesZip(String nombreReporte, String pass, Map<String, Object> p, String DB) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
 		long t = System.currentTimeMillis();
 		TareaGenerarReportePDF generadorPDF = new TareaGenerarReportePDF();
 		TareaGeneradorZip generadorZip = new TareaGeneradorZip();
 		String r = null, retorno;
 		
 		try{
-			r = generadorPDF.generarPDF(nombreReporte, t, p);
+			r = generadorPDF.generarPDF(nombreReporte, t, p, DB);
 			retorno = generadorZip.crearZipPorRuta1(r, nombreReporte, t, pass);
 		}finally{
 			generadorPDF = null;
@@ -62,17 +62,17 @@ public class ActividadGenerarReportes {
 	 * @throws JRException
 	 * @throws IOException
 	 */
-	public String generarReporte(String nombreReporte, String pass, Map<String, Object> p) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
-		TareaGenerarReportePDF generadorPDF = new TareaGenerarReportePDF();
-		long t = System.currentTimeMillis();
-		String r = null;
-		try{
-			r = generadorPDF.generarPDF(nombreReporte, t, p);
-		}finally{
-			generadorPDF = null;
-		}
-		return r;
-	}
+//	public String generarReporte(String nombreReporte, String pass, Map<String, Object> p, String DB) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
+//		TareaGenerarReportePDF generadorPDF = new TareaGenerarReportePDF();
+//		long t = System.currentTimeMillis();
+//		String r = null;
+//		try{
+//			r = generadorPDF.generarPDF(nombreReporte, t, p, DB);
+//		}finally{
+//			generadorPDF = null;
+//		}
+//		return r;
+//	}
 	
 	
 	public String generarReporte(String nombreReporte, String pass, Map<String, Object> p, String DB) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
@@ -90,7 +90,7 @@ public class ActividadGenerarReportes {
 	public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException, ExcepcionMch, JRException, ZipException, InterruptedException {
 		Map<String, Object> p = new HashMap<String, Object> ();
 		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
-		String r = new ActividadGenerarReportes().generarReportesZip("facturaSanRafael","sanrafael", p);
+		String r = new ActividadGenerarReportes().generarReportesZip("facturaSanRafael","sanrafael", p, "SanRafael");
 		System.out.println(r);
 	}
 }

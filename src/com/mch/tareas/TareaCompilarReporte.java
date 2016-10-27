@@ -29,7 +29,7 @@ public class TareaCompilarReporte {
 	public String compilar(String reporte){
 		String respuesta ="";
 		
-		String ruta = UtilMCH.getRutaProyecto().replace("bin/", "");
+		String ruta = UtilMCH.getRutaProyecto().replace("bin", "reportes/");
 		
 		String origen = ruta+"reportes/"+reporte+"/"+reporte+".jrxml";
 		String destino = ruta+"reportes/"+reporte+"/"+reporte+".jasper";

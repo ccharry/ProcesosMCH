@@ -35,7 +35,7 @@ public class ActividadLeerCorreo {
 	public static void main(String[] args) {
 		ActividadLeerCorreo ac = new ActividadLeerCorreo();
 		try {
-			System.out.println(ac.leerCorreo("san").toString());
+			System.out.println(ac.leerCorreo("FacturacionMch").toString());
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
