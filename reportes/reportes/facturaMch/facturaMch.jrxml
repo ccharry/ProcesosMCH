@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.7715610000000017"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="144"/>
 	<import value="com.mch.utilidades.UtilidadCantidadEnLetras"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -607,7 +607,12 @@ FIRMA Y SELLO DEL CLIENTE]]></text>
 					<font fontName="Arial" isBold="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{cdescr1}.replace("[ENTER]","\n")+"\n"+$F{cdescr2}.replace("[ENTER]","\n")+"\n"+$F{cdescr3}.replace("[ENTER]","\n")+"\n"+$F{cdescr4}.replace("[ENTER]","\n")+"\n\n"+$F{cdescr5}.replace("[ENTER]","\n")+"\n\n"+$F{DESCRIP}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{cdescr1}+"").replace("[ENTER]","\n").replace("null", "")+"\n"+
+($F{cdescr2}+"").replace("[ENTER]","\n").replace("null", "")+"\n"+
+($F{cdescr3}+"").replace("[ENTER]","\n").replace("null", "")+"\n"+
+($F{cdescr4}+"").replace("[ENTER]","\n").replace("null", "")+"\n\n"+
+($F{cdescr5}+"").replace("[ENTER]","\n").replace("null", "")+"\n\n"+
+($F{DESCRIP}+"").replace("null", "")]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement key="staticText-23" x="18" y="32" width="28" height="19" uuid="7ee79f4c-3db1-44e3-afa0-1cf5088a2f20"/>
