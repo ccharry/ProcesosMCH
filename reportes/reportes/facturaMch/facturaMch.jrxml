@@ -11,12 +11,12 @@
 	<import value="net.sf.jasperreports.engine.data.*"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[SELECT *, NVALOR+VALORIVA VALORNETO,
+		<![CDATA[SELECT *, ISNULL(para,'') para, NVALOR+VALORIVA VALORNETO,
 CASE
  WHEN EMP.CODMIGO = 1 THEN 'Código MIGO: '+REPLACE(ISNULL(MIGO,''), '-', '')  ELSE ''
 END DESCRIP,
 CASE
- WHEN EMP.CODMIGO = 1 AND LEN(REPLACE(ISNULL(MIGO,''), '-', '')) = 0 THEN 'PROFORMA' ELSE 'FACTURA'
+ WHEN EMP.CODMIGO = 1 AND LEN(REPLACE(ISNULL(MIGO,''), '-', '')) = 0 THEN 'COMPRA VENTA' ELSE 'FACTURA'
 END DESCRIP2,
 
 RIGHT( '00000000000000' + CAST( RTRIM(RP.DESDE) AS VARCHAR(14)), 14 ) DESDER,
@@ -24,13 +24,13 @@ RIGHT( '00000000000000' + CAST( RTRIM(RP.HASTA) AS VARCHAR(14)), 14 ) HASTAR,
 CONVERT(VARCHAR(10), RP.FECHA, 111) FECHAR,
 RTRIM(RP.NO_RESOLUCION) RESOLUCIONR
 FROM (
-SELECT *, ( (NVALOR*PORCENTIVA) / 100) VALORIVA, CODMIGO MIGO FROM FACTURAS
+SELECT *, ROUND((NVALOR*PORCENTIVA) / 100,0) VALORIVA, CODMIGO MIGO FROM FACTURAS
 WHERE IMPRIMIR = 0) AS FACT
 LEFT JOIN EMPRESAS AS EMP
 ON FACT.CIDEMPRESA = EMP.CIDEMPRESA
 LEFT JOIN RESOLUCION_PARAMETRIZABLE RP
 ON FACT.CIDEMPRESA = EMP.CIDEMPRESA
-order by cnumfact]]>
+ORDER BY CNUMFACT]]>
 	</queryString>
 	<field name="cidempresa" class="java.lang.String"/>
 	<field name="cnumfact" class="java.lang.String"/>
@@ -202,7 +202,7 @@ I.V.A REGIMEN COMUN: 03-2262-09]]></text>
 					<font fontName="Arial"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[CAMBIARIA DE COMPRA VENTA]]></text>
+				<text><![CDATA[PROFORMA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement key="staticText-18" x="360" y="40" width="21" height="15" forecolor="#666666" uuid="57d12cae-33d9-437a-8bb9-07ad88ff5293"/>
@@ -219,7 +219,7 @@ I.V.A REGIMEN COMUN: 03-2262-09]]></text>
 				<text><![CDATA[No.]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="383" y="35" width="156" height="25" forecolor="#CC0000" uuid="14ed9756-1f18-491a-91ed-e2710c10a872"/>
+				<reportElement key="textField" x="383" y="34" width="138" height="25" forecolor="#CC0000" uuid="14ed9756-1f18-491a-91ed-e2710c10a872"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -261,7 +261,7 @@ I.V.A REGIMEN COMUN: 03-2262-09]]></text>
 				<textFieldExpression><![CDATA[$F{dfecvto}]]></textFieldExpression>
 			</textField>
 			<textField pattern="" isBlankWhenNull="false">
-				<reportElement key="textField" x="422" y="1" width="60" height="14" forecolor="#666666" backcolor="#FFFFFF" uuid="642a11f1-462e-4c94-8fd8-24f19868d854"/>
+				<reportElement key="textField" x="363" y="1" width="174" height="14" forecolor="#666666" backcolor="#FFFFFF" uuid="642a11f1-462e-4c94-8fd8-24f19868d854"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -601,8 +601,8 @@ FIRMA Y SELLO DEL CLIENTE]]></text>
 				<textFieldExpression><![CDATA[($F{cdescr1}+"").replace("[ENTER]","\n").replace("null", "")+"\n"+
 ($F{cdescr2}+"").replace("[ENTER]","\n").replace("null", "")+"\n"+
 ($F{cdescr3}+"").replace("[ENTER]","\n").replace("null", "")+"\n"+
-($F{cdescr4}+"").replace("[ENTER]","\n").replace("null", "")+"\n\n"+
-($F{cdescr5}+"").replace("[ENTER]","\n").replace("null", "")+"\n\n"+
+($F{cdescr4}+"").replace("[ENTER]","\n").replace("null", "")+"\n"+
+($F{cdescr5}+"").replace("[ENTER]","\n").replace("null", "")+"\n"+
 ($F{DESCRIP}+"").replace("null", "")]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -687,7 +687,7 @@ FIRMA Y SELLO DEL CLIENTE]]></text>
 					<font fontName="Arial" size="8" isBold="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Para: "+$F{para}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Para: "+($F{para}+"").replace("null", "")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
