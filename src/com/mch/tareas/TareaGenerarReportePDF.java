@@ -10,10 +10,8 @@ import java.util.Map;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRExporterParameter;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.JRPdfExporterParameter;
@@ -47,14 +45,14 @@ public class TareaGenerarReportePDF {
 	public String generarPDF(String nombreReporte, long time, Map<String, Object>parametros, String DB) throws ExcepcionMch {
 
 		String ruta = UtilMCH.getRutaProyecto().replace("bin", "reportes");
-		
+
 		ruta = ruta+"/reportes/"+nombreReporte+"/"+nombreReporte+".jasper";
-		
+
 		try {
 			File file = new File(ruta);
 			System.out.println("-----------------------------------------------");
 			System.out.println(file);
-			
+
 			if(file.isFile() == false){
 				throw new ExcepcionMch("No se encontro el reporte "+nombreReporte+", recuerde que el nombre de la carpeta debe ser igual al nombre del reporte.");
 			}
@@ -94,28 +92,30 @@ public class TareaGenerarReportePDF {
 		try {
 
 			new File(ruta2).mkdir();
-//			JasperReport jr=JasperCompileManager.compileReport(ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jrxml");
-//			JasperReport jr=JasperCompileManager.compileReport(ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jrxml");
+			//			JasperReport jr=JasperCompileManager.compileReport(ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jrxml");
+			//			JasperReport jr=JasperCompileManager.compileReport(ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jrxml");
 			JasperPrint jp = JasperFillManager.fillReport(ruta+"reportes/"+nombreReporte+"/"+nombreReporte+".jasper",parametros,PoolInstanciasConexion.getInstancia().getConexionLibre(DB).getCon());;
 			jp.setName("");
 			JRPdfExporter exporter = new JRPdfExporter();       
 			exporter.setParameter(JRExporterParameter.JASPER_PRINT, jp);
 			exporter.setParameter(JRExporterParameter.OUTPUT_FILE,new File(ruta2+nombreReporte+".pdf"));
-			exporter.setParameter(JRPdfExporterParameter.OWNER_PASSWORD, pass);
-			exporter.setParameter(JRPdfExporterParameter.USER_PASSWORD, pass);
+			if(!(pass+"").replace("null", "").equals("")){
+				exporter.setParameter(JRPdfExporterParameter.OWNER_PASSWORD, pass);
+				exporter.setParameter(JRPdfExporterParameter.USER_PASSWORD, pass);
+			}
 			exporter.setParameter(JRPdfExporterParameter.IS_ENCRYPTED, Boolean.TRUE);
 			exporter.exportReport();
 		} catch (ClassNotFoundException e) {
-//			e.printStackTrace();
+			//			e.printStackTrace();
 			throw new ExcepcionMch("Ha ocurrido un error al momento de generar el reporte en PDF: "+e.getMessage());
 		} catch (JRException e) {
-//			e.printStackTrace();
+			//			e.printStackTrace();
 			throw new ExcepcionMch("Ha ocurrido un error al momento de generar el reporte en PDF: "+e.getMessage());
 		} catch (SQLException e) {
-//			e.printStackTrace();
+			//			e.printStackTrace();
 			throw new ExcepcionMch("Ha ocurrido un error al momento de generar el reporte en PDF: "+e.getMessage());
 		} catch (ExcepcionMch e) {
-//			e.printStackTrace();
+			//			e.printStackTrace();
 			throw new ExcepcionMch("Ha ocurrido un error al momento de generar el reporte en PDF: "+e.getMessage());
 		}
 		return ruta2+"/"+nombreReporte+".pdf";

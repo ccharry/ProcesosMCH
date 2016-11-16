@@ -70,6 +70,7 @@ public class ProcesoSanRafael implements Job{
 	private static String PROCEDIMIENTO_VALIDACIONES = "procValidacionesFacturas";
 	private static String PROCEDIMIENTO_MOVER_A_HISTORICO = "procMoverAHistorico";
 	private static String PROCEDIMIENTO_ELIMINAR_TEMPORAL = "procEliminarTemporal";
+	private static String PROCEDIMIENTO_CONOCER_INFO = "procConocerInfo";
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 *Nombre del negocio que hay que llamar en caso de 
@@ -142,8 +143,13 @@ public class ProcesoSanRafael implements Job{
 							rutaArchivo = generarReporte(NOMBRE_REPORTE, PASSWORD_FILE,false, NEGOCIO);
 						}
 
+						String tempMensaje = invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_CONOCER_INFO).trim().toLowerCase();
+						JSONObject temp = new JSONObject();
+						temp.put("remitente", "servicios@sistematizando.com");
+						temp.put("asunto", "Información cargue SAN RAFAEL");
 						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
 						enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br><p>"+r+"</p>",  array.getJSONObject(a), NEGOCIO);
+						enviarCorreo(null,tempMensaje+"<br>remitente: "+array.getJSONObject(a).getString("remitente"),  temp, NEGOCIO);
 
 					}else{
 						enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a), NEGOCIO);

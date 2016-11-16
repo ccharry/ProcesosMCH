@@ -265,7 +265,7 @@ public class ProcesoFacturacionMch  implements Job{
 	private String generarReporte(String nombreReporte,  String negocio) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
 		Map<String, Object> p = new HashMap<String, Object> ();
 		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes/imagenes/"));
-		return actividadGenerarReportesZip.generarReporte(nombreReporte,"MCH", p, UtilMCH.getDataBaseName(negocio));
+		return actividadGenerarReportesZip.generarReporte(nombreReporte,null, p, UtilMCH.getDataBaseName(negocio));
 	}
 
 	/**
@@ -372,8 +372,8 @@ public class ProcesoFacturacionMch  implements Job{
 		//		a = a.substring(0, a.lastIndexOf("\\"));
 		//		System.out.println(a);
 		ProcesoFacturacionMch p = new ProcesoFacturacionMch();
-		p.generarReporte("facturaMch", "FacturacionMch");
-//		p.execute(null);
+//		p.generarReporte("facturaMch", "FacturacionMch");
+		p.execute(null);
 		//		JSONObject o = new JSONObject();
 		//		o.put("asunto", "hola");
 		//		System.out.println(o);
