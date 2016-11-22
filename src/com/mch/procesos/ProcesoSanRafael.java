@@ -120,7 +120,11 @@ public class ProcesoSanRafael implements Job{
 				try{
 					emailActual = array.getJSONObject(a).getString("remitente");
 					asuntoActual = array.getJSONObject(a).getString("asunto");
-
+					if(emailActual.toLowerCase().contains("sistematizando")){
+						NEGOCIO = "PruebasSanRafael";
+					}else{
+						NEGOCIO = "SanRafael";
+					}
 					mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA_TEMPORAL);
 					rutaArchivosTemporales = array.getJSONObject(a).getString("ruta");
 					objTemp = new JSONObject(mensaje);

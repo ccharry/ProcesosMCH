@@ -22,8 +22,20 @@
 		"generarZIP":false
 	},
 	{
+		"negocio":"PruebasSanRafael",
+		"dataBase":"Pru_SanRafael",
+		"rutaDescarga":"\\\\192.168.2.5\\C$\\ARCHIVOS_EMAIL",
+		"generarZIP":false
+	},
+	{
 		"negocio":"FacturacionMch",
 		"dataBase":"MCH",
+		"rutaDescarga":"\\\\192.168.2.5\\C$\\ARCHIVOS_EMAIL",
+		"generarZIP":false
+	},
+	{
+		"negocio":"PruebasFacturacionMch",
+		"dataBase":"Pru_MCH",
 		"rutaDescarga":"\\\\192.168.2.5\\C$\\ARCHIVOS_EMAIL",
 		"generarZIP":false
 	},

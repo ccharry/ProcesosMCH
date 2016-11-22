@@ -121,7 +121,11 @@ public class ProcesoFacturacionMch  implements Job{
 				try{
 					emailActual = array.getJSONObject(a).getString("remitente");
 					asuntoActual = array.getJSONObject(a).getString("asunto");
-
+					if(emailActual.toLowerCase().contains("sistematizando")){
+						NEGOCIO = "PruebasFacturacionMch";
+					}else{
+						NEGOCIO = "FacturacionMch";
+					}
 					mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA_TEMPORAL);
 					System.out.println(mensaje);
 					
