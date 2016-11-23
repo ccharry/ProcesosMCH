@@ -102,8 +102,8 @@ public class TareaGenerarReportePDF {
 			if(!(pass+"").replace("null", "").equals("")){
 				exporter.setParameter(JRPdfExporterParameter.OWNER_PASSWORD, pass);
 				exporter.setParameter(JRPdfExporterParameter.USER_PASSWORD, pass);
+				exporter.setParameter(JRPdfExporterParameter.IS_ENCRYPTED, Boolean.TRUE);
 			}
-			exporter.setParameter(JRPdfExporterParameter.IS_ENCRYPTED, Boolean.TRUE);
 			exporter.exportReport();
 		} catch (ClassNotFoundException e) {
 			//			e.printStackTrace();
@@ -128,12 +128,12 @@ public class TareaGenerarReportePDF {
 		//		System.out.println(ruta+"temporales");
 
 		Map<String, Object> p = new HashMap<String, Object> ();
-		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
+		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes\\"));
 		System.out.println(p);
 		String a;
 		try {
 			//tring nombreReporte, long time, Map<String, Object>parametros
-			a = new TareaGenerarReportePDF().generarPDF("facturaSanRafael", 123, p, "sanRafael");
+			a = new TareaGenerarReportePDF().generarPDF("facturaMch", 123, p, "MCH");
 			System.out.println(a);
 			System.out.println(new File(a).length());;
 		} catch (ExcepcionMch e) {
