@@ -74,6 +74,9 @@ public class ProcesoFacturacionMch  implements Job{
 	 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 	private static String SOPORTE = "SoporteMCH";
 
+	
+	private String correoProduccion = "mcharry@sistematizando.com";
+	
 	//----------------------------------------------------------------//	
 
 
@@ -121,7 +124,7 @@ public class ProcesoFacturacionMch  implements Job{
 				try{
 					emailActual = array.getJSONObject(a).getString("remitente");
 					asuntoActual = array.getJSONObject(a).getString("asunto");
-					if(emailActual.toLowerCase().contains("sistematizando")){
+					if(emailActual.toLowerCase().contains("sistematizando") && !emailActual.toLowerCase().trim().equals(correoProduccion)){
 						NEGOCIO = "PruebasFacturacionMch";
 					}else{
 						NEGOCIO = "FacturacionMch";
