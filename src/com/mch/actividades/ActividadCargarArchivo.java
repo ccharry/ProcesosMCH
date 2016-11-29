@@ -42,7 +42,7 @@ public class ActividadCargarArchivo extends TareaEnviarArchivoRest{
 		String URL = generarRutaPeticion("servicioCargarArchivoExcel",p);
 		return enviarArchivo(URL, f);
 	}
-	
+
 	/**
 	 * Metodo que invoca el servicio encargado
 	 * de importar multiples archivos a una 
@@ -64,7 +64,7 @@ public class ActividadCargarArchivo extends TareaEnviarArchivoRest{
 		String URL = generarRutaPeticion("servicioCargarArchivoExcel",p);
 		return enviarArchivo(URL, f);
 	}
-	
+
 	/**
 	 * Metodo que invoca el servicio encargado
 	 * de importar multiples archivos a una 
@@ -86,9 +86,65 @@ public class ActividadCargarArchivo extends TareaEnviarArchivoRest{
 		String URL = generarRutaPeticion("servicioCargarArchivoExcel",p);
 		return enviarArchivo(URL, f);
 	}
-	
-//	public static void main(String[] args) throws Exception {
-//		String a = new ActividadCargarArchivo().cargarArchivoABaseDatos(new File("C:\\Users\\Admin\\Desktop\\TEMP/FACTURACION  AGOSTO  2016 (1).xlsx"), "FACTURAS_TEMP","SanRafael","SanRafael");
-//		System.out.println(a);
-//	}
+
+
+	/**
+	 * 
+	 * @param files
+	 * @param config
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws JSONException
+	 * @throws IOException
+	 * @throws ExcepcionMch
+	 * @throws MessagingException
+	 */
+	public List<Object[]> leerArchivoExcel(File files, PropiedadServicioCargarArchivo config) throws IllegalArgumentException, IllegalAccessException, JSONException, IOException, ExcepcionMch, MessagingException{
+		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(config);
+		List<ArchivoBean> f = new ArrayList<ArchivoBean>();
+		f.add(new ArchivoBean(files));
+		String URL = generarRutaPeticion("servicioLeerArchivoExcel",p);
+		return organizarInformacion(enviarArchivo(URL, f));
+	}
+
+	/**
+	 * Metodo que organiza la información
+	 * que llega en un formato para ponerla
+	 * en una matriz.
+	 * @param info
+	 * @return
+	 */
+	private List<Object[]> organizarInformacion(String info){
+
+		System.out.println("--------------------------------");
+		System.out.println(info);
+		System.out.println("--------------------------------");
+		List<Object[]> retorno = new ArrayList<Object[]>();
+
+		String[] filas = info.split("\n");
+
+		for(String f : filas){
+			String[] columnasTemp = f.split("\t");
+			Object[] columnas = new Object[columnasTemp.length];
+			for(int c = 0 ; c < columnasTemp.length ; c++){
+				columnas[c] = columnasTemp[c];
+			}
+			retorno.add(columnas);
+		}
+		return retorno;
+	}
+
+
+	public static void main(String[] args) throws Exception {
+//		List<Object[]> a = new ActividadCargarArchivo().cargarArchivosABaseDatos(new File("E:\\ARCHIVOBASE\\p").listFiles(), new PropiedadServicioCargarArchivo("Pru_SanRafael", "FACTURAS_TEMP", "SanRafael", true));
+//		for(Object[] b : a){
+//			for(Object c : b){
+//				System.out.print(c+" ");
+//			}
+//			System.out.println("---------------");
+//		}
+		String x =  new ActividadCargarArchivo().cargarArchivosABaseDatos(new File("E:\\ARCHIVOBASE\\p").listFiles(), new PropiedadServicioCargarArchivo("Pru_SanRafael", "FACTURAS_TEMP", "SanRafael", true));
+		System.out.println(x);
+	}
 }

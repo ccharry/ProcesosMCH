@@ -21,6 +21,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.mch.excepciones.ExcepcionMch;
 import com.mch.procesos.ProcesoFacturacionMch;
+import com.mch.procesos.ProcesoNominaHospital;
 import com.mch.procesos.ProcesoSanRafael;
 import com.mch.tareas.TareaCompilarReporte;
 import com.mch.tareas.TareaGenerarRutaPeticion;
@@ -117,6 +118,9 @@ public class Main {
 		JobDetail job2 = JobBuilder.newJob(ProcesoFacturacionMch.class).withIdentity("procesoFacturacion", "group2").build();
 		Trigger trigger2 = TriggerBuilder.newTrigger().withIdentity("triggerProcesoFacturacion", "group2").withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo+1).repeatForever()).build();
 		
+		JobDetail job3 = JobBuilder.newJob(ProcesoNominaHospital.class).withIdentity("procesoNominaHospital", "group3").build();
+		Trigger trigger3 = TriggerBuilder.newTrigger().withIdentity("triggerProcesoFacturacion", "group3").withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo).repeatForever()).build();
+		
 //		JobDetail job3 = JobBuilder.newJob(ProcesoPruebasSanRafael.class).withIdentity("procesoPruebasSanRafael", "group1").build();
 //		Trigger trigger3 = TriggerBuilder.newTrigger() .withIdentity("triggerProcesoSanRafael", "group1") .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo+2).repeatForever()).build();
 //		
@@ -127,7 +131,7 @@ public class Main {
 		scheduler.start();
 		scheduler.scheduleJob(job, trigger);
 		scheduler.scheduleJob(job2, trigger2);
-//		scheduler.scheduleJob(job3, trigger3);
+		scheduler.scheduleJob(job3, trigger3);
 //		scheduler.scheduleJob(job4, trigger4);
 	}
 }

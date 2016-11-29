@@ -22,7 +22,7 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 public class TareaEnviarArchivoRest extends TareaGenerarRutaPeticion{
 
 	/**
-	 * Metodod encargado de enviar un archivo
+	 * Metodo encargado de enviar un archivo
 	 * de acuerdo a la URL especificada
 	 * @param URL
 	 * @param archivos
@@ -58,6 +58,7 @@ public class TareaEnviarArchivoRest extends TareaGenerarRutaPeticion{
 				.entity(request, "multipart/form-data")
 				.accept("application/json")
 				.post(String.class);
+				
 		return response;
 	}
 

@@ -369,7 +369,7 @@ public class ProcesoSanRafael implements Job{
 	public void insertarLog(String negocio, String mensaje, String proceso) throws JSONException, IllegalArgumentException, IllegalAccessException, IOException, ExcepcionMch{
 		PropiedadServicioInsertarLog propiedadServicioInsertarLog = new PropiedadServicioInsertarLog();
 		propiedadServicioInsertarLog.setDataBase(UtilMCH.getDataBaseName(negocio));
-		propiedadServicioInsertarLog.setMensaje(mensaje);
+		propiedadServicioInsertarLog.setMensaje(mensaje.replace("'", ""));
 		propiedadServicioInsertarLog.setProceso(proceso);
 		propiedadServicioInsertarLog.setNegocio(negocio);
 		JSONObject a = new JSONObject(ActividadInsertar.log(propiedadServicioInsertarLog));
