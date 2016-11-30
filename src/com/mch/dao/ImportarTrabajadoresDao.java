@@ -14,7 +14,7 @@ import com.mch.propiedades.servicios.PropiedadesServicioEjecutarConsulta;
  * @author Camilo
  * 29/11/20166
  */
-public class ConsultasImportacionTrabajadoresDao {
+public class ImportarTrabajadoresDao {
 
 	private String SQL = "";
 	private ActividadEjecutarConsulta actividadEjecutarConsulta = new ActividadEjecutarConsulta();

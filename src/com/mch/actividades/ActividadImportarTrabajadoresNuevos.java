@@ -17,7 +17,7 @@ import com.mch.bean.ContratoBean;
 import com.mch.bean.CptosHistAuBean;
 import com.mch.bean.SegSocialBean;
 import com.mch.bean.TributariaBean;
-import com.mch.dao.ConsultasImportacionTrabajadoresDao;
+import com.mch.dao.ImportarTrabajadoresDao;
 import com.mch.dao.InsertarDatosPorBeanDao;
 import com.mch.excepciones.ExcepcionMch;
 
@@ -30,7 +30,7 @@ public class ActividadImportarTrabajadoresNuevos {
 	private static final short TAMANO_FILA_MINIMO = 30, INDICE_INICIO_DEVENGOS=26;
 	private DecimalFormat formatocedula = new DecimalFormat("#########");
 	private SimpleDateFormat formatoFecha = new SimpleDateFormat("YYYY-MM-dd");
-	private ConsultasImportacionTrabajadoresDao consultas = new ConsultasImportacionTrabajadoresDao();
+	private ImportarTrabajadoresDao consultas = new ImportarTrabajadoresDao();
 	private Date fechaIngreso = new Date();
 
 	/**

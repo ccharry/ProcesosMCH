@@ -20,6 +20,7 @@ import org.quartz.JobExecutionException;
 
 import com.mch.actividades.ActividadCargarArchivo;
 import com.mch.actividades.ActividadEnviarCorreo;
+import com.mch.actividades.ActividadImportarExcelHorasExtras;
 import com.mch.actividades.ActividadImportarTrabajadoresNuevos;
 import com.mch.actividades.ActividadLeerCorreo;
 import com.mch.bean.ArchivoBean;
@@ -94,24 +95,44 @@ public class ProcesoNominaHospital  implements Job{
 					emailActual = array.getJSONObject(a).getString("remitente");
 					asuntoActual = array.getJSONObject(a).getString("asunto");
 					rutaArchivosTemporales = array.getJSONObject(a).getString("ruta");
-					System.out.println(new File(rutaArchivosTemporales).listFiles()[0]);
-					List<Object[]> informacion = actividadCargarArchivo.leerArchivoExcel(new File(rutaArchivosTemporales).listFiles()[0],  new PropiedadServicioCargarArchivo(UtilMCH.getDataBaseName(NEGOCIO), "TEMP", NEGOCIO, false));
-					System.out.println("2");		
-					if( informacion.size() == 0){
-						enviarCorreo(null, generarTablaMensaje("No se pudo leer el archivo: "+new File(rutaArchivosTemporales).listFiles()[0].getName()), array.getJSONObject(a), NEGOCIO);
-						System.out.println("3");
-						continue;
-					}
-					try{
-						System.out.println("4");
-						new ActividadImportarTrabajadoresNuevos(informacion, new File(rutaArchivosTemporales).listFiles()[0].getName(), UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);
-						System.out.println("5");
-						enviarCorreo(null, "Proceso realizado con exíto",  array.getJSONObject(a), NEGOCIO);
-						System.out.println("6");
-					}catch(ExcepcionMch e){
-						System.out.println("7");
-						e.printStackTrace();
-						enviarCorreo(null, generarTablaMensaje(e.getMessage().split(";")), array.getJSONObject(a), NEGOCIO);
+					for(File archivo : new File(rutaArchivosTemporales).listFiles()){
+						System.out.println(archivo);
+						List<Object[]> informacion = actividadCargarArchivo.leerArchivoExcel(archivo,  new PropiedadServicioCargarArchivo(UtilMCH.getDataBaseName(NEGOCIO), "TEMP", NEGOCIO, false));
+						System.out.println("2");		
+						if( informacion.size() == 0){
+							enviarCorreo(null, generarTablaMensaje("No se pudo leer el archivo: "+new File(rutaArchivosTemporales).listFiles()[0].getName()), array.getJSONObject(a), NEGOCIO);
+							System.out.println("3");
+							continue;
+						}
+						try{
+
+							if(archivo.getName().replace(" ", "").toLowerCase().contains("nvext")){
+								String[] partes = asuntoActual.split(",");
+								if(partes.length < 2 || partes.length > 2)
+									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName());
+								if(!partes[0].contains("=") || !partes[1].contains("="))
+									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName());
+								if(!partes[0].contains("liquidacion"))
+									throw new ExcepcionMch("No se la liquidacion en el asunto para importar el archvo: "+archivo.getName());
+								if(!partes[1].contains("periodo"))
+									throw new ExcepcionMch("No se el periodo en el asunto para importar el archvo: "+archivo.getName());
+								new ActividadImportarExcelHorasExtras(informacion, partes[0].split("=")[1].trim(), partes[1].split("=")[1].trim(), UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);
+							}else if(archivo.getName().replace(" ", "").toLowerCase().contains("nving")){
+								new ActividadImportarTrabajadoresNuevos(informacion, archivo.getName(), UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);	
+							}else{
+								throw new ExcepcionMch("No se pudo determinar el proceso para el archivo: "+archivo.getName());
+							}
+
+							System.out.println("4");
+
+							System.out.println("5");
+							enviarCorreo(null, "Proceso realizado con exíto",  array.getJSONObject(a), NEGOCIO);
+							System.out.println("6");
+						}catch(ExcepcionMch e){
+							System.out.println("7");
+							e.printStackTrace();
+							enviarCorreo(null, generarTablaMensaje(e.getMessage().split(";")), array.getJSONObject(a), NEGOCIO);
+						}
 					}
 					System.out.println("8");
 				}catch(Exception e){
@@ -169,7 +190,7 @@ public class ProcesoNominaHospital  implements Job{
 	 * @throws MessagingException
 	 */
 	private String enviarCorreo(String rutaZip,String mensaje, JSONObject obj, String negocio) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException, MessagingException{
-//		System.out.println(obj);
+		//		System.out.println(obj);
 		if(obj.isNull("remitente") || obj.isNull("asunto")){
 			return null;
 		}

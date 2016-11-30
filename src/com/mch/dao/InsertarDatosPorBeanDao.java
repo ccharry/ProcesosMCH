@@ -82,7 +82,7 @@ public class InsertarDatosPorBeanDao {
 			throw new ExcepcionMch("Ha ocurrido un error al ejecutar el insert, retorno del servicio: "+retorno);
 		JSONObject r = retorno.getJSONObject(0);
 		if(!r.isNull("error"))
-			throw new ExcepcionMch("Ha ocurrido un error al ejecutar el insert, retorno del servicio: "+r.getString("error"));
+			throw new ExcepcionMch("Ha ocurrido un error al ejecutar el insert, retorno del servicio: "+r.getString("mensaje"));
 
 		return true;
 	}
