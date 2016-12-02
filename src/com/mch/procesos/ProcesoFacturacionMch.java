@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 
@@ -110,6 +112,7 @@ public class ProcesoFacturacionMch  implements Job{
 	 */
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+		Logger.getLogger(ProcesoFacturacionMch.class.getName()).log(Level.INFO, "Entró a proceso FACTURACION MCH");
 		String emailActual = null, asuntoActual = null;
 		try {
 			insertarLog(NEGOCIO, "Inició el proceso de Facturación", "Facturación");

@@ -127,5 +127,51 @@ public class ImportarExcelHorasExtrasDao {
 		return true;
 	}
 	
+	/**
+	 * Metodo usado para validar si la liquidacion
+	 * corresponde al periodo que le llega como parametro
+	 * @param liquidacion
+	 * @param periodo
+	 * @param DB
+	 * @param negocio
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws JSONException
+	 * @throws ExcepcionMch
+	 * @throws IOException
+	 */
+	public boolean validarLiquidacionPeriodo(String liquidacion, String periodo, String DB, String negocio) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException{
+		SQL = "SELECT COUNT(*)r FROM DEF_LIQUIDACION WHERE CHLIQUIDACION = '"+liquidacion+"' AND CHPERIODO = '"+periodo+"'";
+		
+		prop.setConsulta(SQL);
+		prop.setDataBase(DB);
+		prop.setNegocio(negocio);
+
+		resultado = actividadEjecutarConsulta.ejecutarConsulta(prop);
+		
+		if(resultado.getJSONObject(0).getInt("r") == 1){
+			return true;
+		}
+		return false;
+	}
+	
+	
+	public boolean validarLiquidacion(String liquidacion, String DB, String negocio) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException{
+		SQL = "SELECT COUNT(*)r FROM DEF_LIQUIDACION WHERE CHLIQUIDACION = '"+liquidacion+"'";
+		
+		prop.setConsulta(SQL);
+		prop.setDataBase(DB);
+		prop.setNegocio(negocio);
+
+		resultado = actividadEjecutarConsulta.ejecutarConsulta(prop);
+		
+		if(resultado.getJSONObject(0).getInt("r") == 1){
+			return true;
+		}		
+		return false;
+	}
+	
+	
 
 }

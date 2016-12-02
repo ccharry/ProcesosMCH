@@ -52,6 +52,15 @@ public class ActividadImportarExcelHorasExtras {
 	 */
 	public ActividadImportarExcelHorasExtras(List<Object[]> informacionExcel, String chLiquidacion, String periodo, String DB, String negocio) throws ExcepcionMch, NullPointerException, IOException, ClassNotFoundException, SQLException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
 
+		boolean validacionLiquidacion = consultar.validarLiquidacion(chLiquidacion, DB, negocio);
+		
+		if(validacionLiquidacion == false)
+			throw new ExcepcionMch("La liquidación: "+chLiquidacion+" no existe en la base de datos, porfavor validar.");
+		
+		boolean validacionPeriodoLiquidacion = consultar.validarLiquidacionPeriodo(chLiquidacion, periodo, DB, negocio);
+		
+		if(validacionPeriodoLiquidacion == false)
+			throw new ExcepcionMch("La liquidación: "+chLiquidacion+" no corresponde al periodo: "+periodo+", porfavor validar.");
 		/*
 		 * Se validan los conceptos que pueda encontrar,
 		 * si encuentra un concepto invalido, retorna una

@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 
@@ -79,6 +81,7 @@ public class ProcesoNominaHospital  implements Job{
 	 */
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+		Logger.getLogger(ProcesoNominaHospital.class.getName()).log(Level.INFO, "Entró a proceso NOMINA HOSPITAL");
 		String emailActual = null, asuntoActual = null;
 		try {
 			insertarLog(NEGOCIO, "Inició el proceso de Nomina Hospital Tomas Uribe", "Hospital Tomas");
@@ -89,33 +92,29 @@ public class ProcesoNominaHospital  implements Job{
 				throw new JobExecutionException(obj.toString());
 			}
 			JSONArray array = obj.getJSONArray("info");
-			System.out.println("1");
 			for(int a = 0 ; a < array.length(); a++){
 				try{
 					emailActual = array.getJSONObject(a).getString("remitente");
 					asuntoActual = array.getJSONObject(a).getString("asunto");
 					rutaArchivosTemporales = array.getJSONObject(a).getString("ruta");
 					for(File archivo : new File(rutaArchivosTemporales).listFiles()){
-						System.out.println(archivo);
 						List<Object[]> informacion = actividadCargarArchivo.leerArchivoExcel(archivo,  new PropiedadServicioCargarArchivo(UtilMCH.getDataBaseName(NEGOCIO), "TEMP", NEGOCIO, false));
-						System.out.println("2");		
 						if( informacion.size() == 0){
 							enviarCorreo(null, generarTablaMensaje("No se pudo leer el archivo: "+new File(rutaArchivosTemporales).listFiles()[0].getName()), array.getJSONObject(a), NEGOCIO);
-							System.out.println("3");
 							continue;
 						}
 						try{
 
 							if(archivo.getName().replace(" ", "").toLowerCase().contains("nvext")){
-								String[] partes = asuntoActual.split(",");
+								String[] partes = asuntoActual.toLowerCase().split(",");
 								if(partes.length < 2 || partes.length > 2)
-									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName());
+									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
 								if(!partes[0].contains("=") || !partes[1].contains("="))
-									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName());
-								if(!partes[0].contains("liquidacion"))
-									throw new ExcepcionMch("No se la liquidacion en el asunto para importar el archvo: "+archivo.getName());
+									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
+								if(!partes[0].contains("liquidacion") && !partes[0].contains("liquidación"))
+									throw new ExcepcionMch("No se encontró la liquidacion en el asunto para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
 								if(!partes[1].contains("periodo"))
-									throw new ExcepcionMch("No se el periodo en el asunto para importar el archvo: "+archivo.getName());
+									throw new ExcepcionMch("No se encontró el periodo en el asunto para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
 								new ActividadImportarExcelHorasExtras(informacion, partes[0].split("=")[1].trim(), partes[1].split("=")[1].trim(), UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);
 							}else if(archivo.getName().replace(" ", "").toLowerCase().contains("nving")){
 								new ActividadImportarTrabajadoresNuevos(informacion, archivo.getName(), UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);	
@@ -123,18 +122,12 @@ public class ProcesoNominaHospital  implements Job{
 								throw new ExcepcionMch("No se pudo determinar el proceso para el archivo: "+archivo.getName());
 							}
 
-							System.out.println("4");
-
-							System.out.println("5");
 							enviarCorreo(null, "Proceso realizado con exíto",  array.getJSONObject(a), NEGOCIO);
-							System.out.println("6");
 						}catch(ExcepcionMch e){
-							System.out.println("7");
 							e.printStackTrace();
 							enviarCorreo(null, generarTablaMensaje(e.getMessage().split(";")), array.getJSONObject(a), NEGOCIO);
 						}
 					}
-					System.out.println("8");
 				}catch(Exception e){
 					enviarCorreo("", "Ha ocurrido un error en el proceso de Hospital Tomas: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! Hospital Tomas"), "SoporteMCH");
 					enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
