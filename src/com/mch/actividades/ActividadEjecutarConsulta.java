@@ -62,6 +62,23 @@ public class ActividadEjecutarConsulta extends TareaEnviarArchivoRest{
 		JSONArray retorno = new JSONArray(r);
 		return retorno;
 	}
+	
+	
+	public JSONArray ejecutarQuery(PropiedadesServicioEjecutarConsulta prop) throws ExcepcionMch, IllegalArgumentException, IllegalAccessException, JSONException, IOException{
+		if((prop.getConsulta()+"").replace("null", "").replace(" ", "").equals(""))
+			throw new ExcepcionMch("No se encontró el artibuto consulta");
+		if((prop.getDataBase()+"").replace("null", "").replace(" ", "").equals(""))
+			throw new ExcepcionMch("No se encontró el artibuto dataBase");
+		if((prop.getNegocio()+"").replace("null", "").replace(" ", "").equals(""))
+			throw new ExcepcionMch("No se encontró el artibuto negocio");
+		TareaPeticion tarea = new TareaPeticion();
+		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(prop);
+		String r = tarea.POST(generarRutaPeticion("servicioQuery", p));
+		JSONArray retorno = new JSONArray(r);
+		return retorno;
+	}
+	
+	
 	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException {
 		PropiedadesServicioEjecutarConsulta p = new PropiedadesServicioEjecutarConsulta("MCH", "SELECT COUNT(*)D FROasM FACTURAS", "FacturacionMch");
 		System.out.println(new ActividadEjecutarConsulta().ejecutarConsulta(p));

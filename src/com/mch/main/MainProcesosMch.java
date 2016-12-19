@@ -32,7 +32,7 @@ import com.mch.utilidades.UtilMCH;
  * @author Camilo
  * 31/08/2016
  */
-public class Main {
+public class MainProcesosMch {
 
 
 	private static Map<String, String> archivos = new HashMap<String, String>();
@@ -57,7 +57,7 @@ public class Main {
 		Collection<String> c = archivos.values();
 		Object[] a = c.toArray();
 		for(Object o : a){
-			Logger.getLogger(Main.class.getName()).log(Level.INFO, compilar.compilar(o.toString()));
+			Logger.getLogger(MainProcesosMch.class.getName()).log(Level.INFO, compilar.compilar(o.toString()));
 		}
 	}
 
@@ -85,29 +85,29 @@ public class Main {
 		boolean v = new File(UtilMCH.getRutaProyecto().replace("bin/", "")).isDirectory();
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		System.out.println("Informacion de arranque");
-		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Ruta del proyecto:");
-		Logger.getLogger(Main.class.getName()).log(Level.INFO, UtilMCH.getRutaProyecto().replace("bin/", ""));
-		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Ruta valida: "+v);
+		Logger.getLogger(MainProcesosMch.class.getName()).log(Level.INFO, "Ruta del proyecto:");
+		Logger.getLogger(MainProcesosMch.class.getName()).log(Level.INFO, UtilMCH.getRutaProyecto().replace("bin/", ""));
+		Logger.getLogger(MainProcesosMch.class.getName()).log(Level.INFO, "Ruta valida: "+v);
 		if(v == false){
-			Logger.getLogger(Main.class.getName()).log(Level.SEVERE, "NOTA: Recuerde extraer las carpetas de los recuros que estan dentro del JAR para el correcto funcionamiento");
+			Logger.getLogger(MainProcesosMch.class.getName()).log(Level.SEVERE, "NOTA: Recuerde extraer las carpetas de los recuros que estan dentro del JAR para el correcto funcionamiento");
 			throw new ExcepcionMch("No se encontro la ruta "+UtilMCH.getRutaProyecto().replace("bin/", ""));
 		}
-		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Realizando Ping a servidor: ");
+		Logger.getLogger(MainProcesosMch.class.getName()).log(Level.INFO, "Realizando Ping a servidor: ");
 		rutaPing = rutaPeticion.generarRutaPeticion("servicioPing", o);
 		System.err.println(rutaPing);
 		JSONObject r = new JSONObject(tarea.POST(rutaPing));
 		if(!r.isNull("error")){
 			throw new ExcepcionMch("Ha ocurrido un error al relizar el ping a la dirección: "+rutaPing);
 		}
-		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Rotorno Ping: "+r);
-		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Compilado reporte:");
+		Logger.getLogger(MainProcesosMch.class.getName()).log(Level.INFO, "Rotorno Ping: "+r);
+		Logger.getLogger(MainProcesosMch.class.getName()).log(Level.INFO, "Compilado reporte:");
 //		Logger.getLogger(Main.class.getName()).log(Level.INFO, compilar.compilar(reporte));
 //		Logger.getLogger(Main.class.getName()).log(Level.INFO, compilar.compilar(reporte2));
 		encontrarReportes(UtilMCH.getRutaProyecto().replace("bin", "reportes"));
 		compilarReportes();
 		int tiempo = UtilLecturaPropiedades.getInstancia().getPropJson("tiempoEjecucionEnMinutos").getInt("tiempoEjecucionEnMinutos");
-		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Tiempo de ejecucion en minutos: "+tiempo);
-		Logger.getLogger(Main.class.getName()).log(Level.INFO, "Esta configuracion se puede modificar en el archivo configuraciones.json que está dentro del JAR");
+		Logger.getLogger(MainProcesosMch.class.getName()).log(Level.INFO, "Tiempo de ejecucion en minutos: "+tiempo);
+		Logger.getLogger(MainProcesosMch.class.getName()).log(Level.INFO, "Esta configuracion se puede modificar en el archivo configuraciones.json que está dentro del JAR");
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
 

@@ -23,6 +23,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.mch.actividades.ActividadCargarArchivo;
+import com.mch.actividades.ActividadEjecutarConsulta;
 import com.mch.actividades.ActividadEnviarCorreo;
 import com.mch.actividades.ActividadGenerarReportes;
 import com.mch.actividades.ActividadInsertar;
@@ -34,6 +35,7 @@ import com.mch.propiedades.servicios.PropiedadServicioCargarArchivo;
 import com.mch.propiedades.servicios.PropiedadServicioEnviarCorreo;
 import com.mch.propiedades.servicios.PropiedadServicioInsertarLog;
 import com.mch.propiedades.servicios.PropiedadServicioInvocarProcedimiento;
+import com.mch.propiedades.servicios.PropiedadesServicioEjecutarConsulta;
 import com.mch.utilidades.UtilLecturaPropiedades;
 import com.mch.utilidades.UtilMCH;
 /**
@@ -89,6 +91,7 @@ public class ProcesoSanRafael implements Job{
 	private ActividadInvocarProcedimiento actividadInvocarProcedimiento = new ActividadInvocarProcedimiento();
 	private ActividadGenerarReportes actividadGenerarReportesZip = new ActividadGenerarReportes();
 	private ActividadEnviarCorreo actividadEnviarCorreo = new ActividadEnviarCorreo();
+	private ActividadEjecutarConsulta actividadEjecutarConsulta = new ActividadEjecutarConsulta();
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	 * Propiedades necesarias para invocar los diferentes 
@@ -166,6 +169,7 @@ public class ProcesoSanRafael implements Job{
 					enviarCorreo("", "Ha ocurrido un error en el proceso de San Rafael: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! San Rafael"), "SoporteMCH");
 					enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
 					insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "San Rafael");
+					eliminarRegistrosError(NEGOCIO);
 					e.printStackTrace();
 				}
 			}
@@ -183,6 +187,7 @@ public class ProcesoSanRafael implements Job{
 				enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
 				insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "San Rafael");
 				invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
+				eliminarRegistrosError(NEGOCIO);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 				throw new JobExecutionException(e1);
@@ -369,6 +374,16 @@ public class ProcesoSanRafael implements Job{
 		}
 	}
 
+	/**
+	 * @param negocio
+	 * @param mensaje
+	 * @param proceso
+	 * @throws JSONException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 * @throws ExcepcionMch
+	 */
 	public void insertarLog(String negocio, String mensaje, String proceso) throws JSONException, IllegalArgumentException, IllegalAccessException, IOException, ExcepcionMch{
 		PropiedadServicioInsertarLog propiedadServicioInsertarLog = new PropiedadServicioInsertarLog();
 		propiedadServicioInsertarLog.setDataBase(UtilMCH.getDataBaseName(negocio));
@@ -381,6 +396,22 @@ public class ProcesoSanRafael implements Job{
 		if(!a.isNull("error"))
 			throw new ExcepcionMch(a.toString());
 	}
+	
+	
+	public void eliminarRegistrosError(String negocio) throws JSONException, IOException, IllegalArgumentException, IllegalAccessException, ExcepcionMch{
+		System.out.println("ELIMINA TABLA TEMPORAL : FACTURAS_TEMP");
+		String consulta = "DELETE FROM FACTURAS_TEMP";
+		PropiedadesServicioEjecutarConsulta propiedadesServicioEjecutarConsulta = new PropiedadesServicioEjecutarConsulta(UtilMCH.getDataBaseName(negocio), consulta, negocio);
+		actividadEjecutarConsulta.ejecutarQuery(propiedadesServicioEjecutarConsulta);
+		
+		consulta = "DELETE FROM FACTURAS ";
+		System.out.println("ELIMINA TABLA TEMPORAL : FACTURAS");
+		propiedadesServicioEjecutarConsulta.setConsulta(consulta);
+		actividadEjecutarConsulta.ejecutarQuery(propiedadesServicioEjecutarConsulta);
+		
+		
+	}
+	
 
 	public static void main(String[] args) throws JSONException, IOException, MessagingException, IllegalArgumentException, IllegalAccessException, ExcepcionMch, ClassNotFoundException, SQLException, JRException, ZipException, InterruptedException, JobExecutionException{
 		//		String a = "\\192.168.2.5\\C$\\TOMCAT_7\\webapps\\ServiciosMCH\\temporales\\20160913-1473802099989";

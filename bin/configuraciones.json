@@ -16,7 +16,8 @@
     	"servicioInsertarLog":"insertarLog",
     	"servicioPing":"ping", 
     	"servicioConsultar":"crud",
-    	"servicioInsertar":"crud/i"
+    	"servicioInsertar":"crud/i",
+    	"servicioQuery":"crud/e"
     },
 	{
 		"negocio":"SanRafael",
