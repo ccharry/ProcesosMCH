@@ -9,6 +9,7 @@
     	"puerto":"8081",
     	"proyecto":"ServiciosMCH",
     	"servicioEnviarCorreo":"enviarCorreo",
+    	"servicioEnviarCorreoEspecial":"enviarCorreo/e",
     	"servicioLeerCorreo":"lecturaCorreo",
     	"servicioCargarArchivoExcel":"cargarArchivo",
     	"servicioLeerArchivoExcel":"cargarArchivo/leer",
@@ -17,7 +18,8 @@
     	"servicioPing":"ping", 
     	"servicioConsultar":"crud",
     	"servicioInsertar":"crud/i",
-    	"servicioQuery":"crud/e"
+    	"servicioQuery":"crud/e",
+    	"servicioReporteHTML":"generarReporteHTML"
     },
 	{
 		"negocio":"SanRafael",
