@@ -10,9 +10,6 @@ import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 
-import net.lingala.zip4j.exception.ZipException;
-import net.sf.jasperreports.engine.JRException;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +28,9 @@ import com.mch.propiedades.servicios.PropiedadServicioCargarArchivo;
 import com.mch.propiedades.servicios.PropiedadServicioEnviarCorreo;
 import com.mch.propiedades.servicios.PropiedadServicioInsertarLog;
 import com.mch.utilidades.UtilMCH;
+
+import net.lingala.zip4j.exception.ZipException;
+import net.sf.jasperreports.engine.JRException;
 
 /**
  * @author Camilo
@@ -106,16 +106,29 @@ public class ProcesoNominaHospital  implements Job{
 						try{
 
 							if(archivo.getName().replace(" ", "").toLowerCase().contains("nvext")){
-								String[] partes = asuntoActual.toLowerCase().split(",");
-								if(partes.length < 2 || partes.length > 2)
-									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
-								if(!partes[0].contains("=") || !partes[1].contains("="))
-									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
-								if(!partes[0].contains("liquidacion") && !partes[0].contains("liquidación"))
-									throw new ExcepcionMch("No se encontró la liquidacion en el asunto para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
-								if(!partes[1].contains("periodo"))
-									throw new ExcepcionMch("No se encontró el periodo en el asunto para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
-								new ActividadImportarExcelHorasExtras(informacion, partes[0].split("=")[1].trim(), partes[1].split("=")[1].trim(), UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);
+//								String[] partes = asuntoActual.toLowerCase().split(",");
+//								if(partes.length < 2 || partes.length > 2)
+//									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
+//								if(!partes[0].contains("=") || !partes[1].contains("="))
+//									throw new ExcepcionMch("No se encontró un asunto válido para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
+//								if(!partes[0].contains("liquidacion") && !partes[0].contains("liquidación"))
+//									throw new ExcepcionMch("No se encontró la liquidacion en el asunto para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
+//								if(!partes[1].contains("periodo"))
+//									throw new ExcepcionMch("No se encontró el periodo en el asunto para importar el archvo: "+archivo.getName()+". Recuerde que el asunto del mensaje debe ser el siguiente: asunto liquidacion=xxxxxxxx, periodo=xxxxxx");
+								String periodo=archivo.getName().replace(" ", "").toLowerCase().substring(5, 11);
+								String liquidacion=archivo.getName().replace(" ", "").toLowerCase().substring(5, 13);
+								System.out.println("numero 1: "+liquidacion);
+								System.out.println("numero 2: "+periodo);
+								
+								if (liquidacion.matches("-?\\d+(\\.\\d+)?")==false || periodo.matches("-?\\d+(\\.\\d+)?")==false) {
+									throw new ExcepcionMch("El nombre de el archivo no posee la estructura definida");
+								}
+								if (asuntoActual.toLowerCase().contains("prueba")) {	
+									System.out.println("vA A ESTA BASE DE DATOS::--: "+UtilMCH.getDataBaseName(NEGOCIO)+"Pru");
+									new ActividadImportarExcelHorasExtras(informacion,liquidacion,periodo, UtilMCH.getDataBaseName(NEGOCIO)+"Pru", NEGOCIO);
+								}else {
+									new ActividadImportarExcelHorasExtras(informacion,liquidacion,periodo, UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);
+								}
 							}else if(archivo.getName().replace(" ", "").toLowerCase().contains("nving")){
 								new ActividadImportarTrabajadoresNuevos(informacion, archivo.getName(), UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);	
 							}else{

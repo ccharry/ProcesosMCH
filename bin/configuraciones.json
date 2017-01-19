@@ -57,7 +57,7 @@
 	},
 	{
 		"negocio":"NominaHospital",
-		"dataBase":"NmwHospitalPru",
+		"dataBase":"NmwHospital",
 		"rutaDescarga":"\\\\192.168.2.5\\E$\\ARCHIVOS_DESCARGA_PRUEBA",
 		"generarZIP":false
 	}
