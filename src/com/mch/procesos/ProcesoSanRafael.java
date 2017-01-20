@@ -321,7 +321,7 @@ public class ProcesoSanRafael implements Job{
 		propiedadServicioEnviarCorreo.setDestinatario(obj.getString("remitente"));
 		propiedadServicioEnviarCorreo.setMensaje(mensaje);
 		propiedadServicioEnviarCorreo.setNegocio(negocio);
-		return actividadEnviarCorreo.enviarEmail(propiedadServicioEnviarCorreo);
+		return actividadEnviarCorreo.enviarEmail(propiedadServicioEnviarCorreo, false);
 	}
 
 	/**

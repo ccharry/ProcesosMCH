@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
+	<property name="ireport.zoom" value="2.4157650000000013"/>
+	<property name="ireport.x" value="124"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="rutaImagen" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT
+(SELECT DESDE FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) DESDE,
+(SELECT HASTA FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) HASTA,
+(SELECT PREFIJO FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) PREFIJO,
+(SELECT FORMAT(FECHA,'yyyy-MM-dd') FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) FECHAR,
+(SELECT NO_RESOLUCION FROM RESOLUCION_PARAMETRIZABLE WHERE ESTADO = 1) NO_RESOLUCION,
+UPPER(TIPO)TIPO,
+LOCAL,
+FACTURA,
+STUFF(CONVERT(VARCHAR(12), FECHA, 107), 1,3,DATENAME(month,FECHA))FECHA,
+STUFF(CONVERT(VARCHAR(12), FECHA_VTO, 107), 1,3,DATENAME(month,FECHA_VTO))FECHA_VTO,
+RAZON_SOCIAL,
+DIRECCION_COMERCIANTE,
+TELEFONO,
+CIUDAD,
+NIT,
+PRIMA,
+SUBTOTAL,
+IVA,
+TOTAL,
+ADMON,
+VALOR_POR_RECAUDAR,
+CASE WHEN TIPO = 'C'
+THEN 'Prima periódica de Uso y Explotación del Local '+LOCAL+' del Centro Comercial Paseo San Rafael'+
+     (CASE WHEN LEN(RTRIM(OBSERVACION)) > 4 THEN ' - '+OBSERVACION ELSE '' END)
+ELSE 'Arrendamiento del local '+LOCAL+' del Centro Comercial Paseo San Rafael'+
+     (CASE WHEN LEN(RTRIM(OBSERVACION)) > 4 THEN ' - '+OBSERVACION ELSE '' END) END CONCEPTO,
+DFECSIST,
+EMAIL_USUARIO,
+NORDEN,
+TEXTO
+FROM FACTURAS
+LEFT JOIN COPIAS
+ON 1 = 1
+ORDER BY CAST(FACTURA AS NUMERIC)]]>
+	</queryString>
+	<field name="DESDE" class="java.math.BigDecimal"/>
+	<field name="HASTA" class="java.math.BigDecimal"/>
+	<field name="PREFIJO" class="java.lang.String"/>
+	<field name="FECHAR" class="java.lang.String"/>
+	<field name="NO_RESOLUCION" class="java.lang.String"/>
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="LOCAL" class="java.lang.String"/>
+	<field name="FACTURA" class="java.lang.String"/>
+	<field name="FECHA" class="java.lang.String"/>
+	<field name="FECHA_VTO" class="java.lang.String"/>
+	<field name="RAZON_SOCIAL" class="java.lang.String"/>
+	<field name="DIRECCION_COMERCIANTE" class="java.lang.String"/>
+	<field name="TELEFONO" class="java.lang.String"/>
+	<field name="CIUDAD" class="java.lang.String"/>
+	<field name="NIT" class="java.lang.String"/>
+	<field name="PRIMA" class="java.math.BigDecimal"/>
+	<field name="SUBTOTAL" class="java.math.BigDecimal"/>
+	<field name="IVA" class="java.math.BigDecimal"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<field name="ADMON" class="java.math.BigDecimal"/>
+	<field name="VALOR_POR_RECAUDAR" class="java.math.BigDecimal"/>
+	<field name="CONCEPTO" class="java.lang.String"/>
+	<field name="DFECSIST" class="java.sql.Timestamp"/>
+	<field name="EMAIL_USUARIO" class="java.lang.String"/>
+	<field name="NORDEN" class="java.lang.String"/>
+	<field name="TEXTO" class="java.lang.String"/>
+	<pageHeader>
+		<band height="153" splitType="Stretch">
+			<rectangle>
+				<reportElement x="399" y="26" width="98" height="30" uuid="af918de9-82eb-4287-838a-cbff97ea7f0f"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="243" y="31" width="127" height="19" uuid="3752e1ab-51ae-4cd4-b09a-bdcba5df927d"/>
+				<textElement>
+					<font fontName="Bernard MT Condensed" size="8" isBold="true" isUnderline="false" pdfFontName="Helvetica" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[- FIDEICOMISO SAN RAFAEL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="398" y="12" width="99" height="14" uuid="f9b342b0-67b7-432a-9569-f141842f79c1"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[FACTURA DE VENTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="408" y="33" width="38" height="23" uuid="6174e291-aa11-4633-a708-5cec1f406d4a"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial Narrow" size="13" isBold="true" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+				</textElement>
+				<text><![CDATA[PAGF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="31" width="243" height="19" uuid="6570d914-aac8-419f-b5f9-337d0d16b970"/>
+				<textElement>
+					<font fontName="Arial" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[PATRIMONIOS AUTONOMOS FIDUCIARIA BANCOLOMBIA S.A. ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="50" width="58" height="11" uuid="327cdf51-63f5-4c0f-b3ce-66076aa56ca5"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[NIT. 830.052.539]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="60" width="146" height="11" uuid="24962b00-d99d-443e-8f5b-395437482de0"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[CALLE 137 No. 47-01    TEL: 6085999]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="70" width="58" height="11" uuid="2dc2d889-b239-4048-bd87-d44cc53973ff"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[BOGOTÁ D.C.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="76" width="433" height="7" uuid="40e26879-9be7-428d-a63b-ce50580d3859"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="5" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[PARA EFECTOS TRIBUTARIOS LOS INGRESOS ORIGINADOS EN ESTA FACTURA CORRESPONDEN A : CONSTRUCTORA URBANA SAN RAFAEL S.A. - CURSA - NIT. 800.140.521-8]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="83" width="433" height="7" uuid="5f3cb51b-c953-4677-be36-41949660b859"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="5" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[POR LO TANTO APLICAN LAS SIGUENTES CONDICIONES TRIBUTARIAS: SUJETO A RETENCIÓN EN LA FUENTE RESPONSABLE DEL IVA, RÉGIMEN COMÚN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="65" y="90" width="433" height="15" uuid="a9cc6d70-272b-4ac0-abcb-400ee3ff9417"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="5" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[ACTIVIDAD ECONOMICA 7010. TARIFA 9.66 x 1000]]></text>
+			</staticText>
+			<image>
+				<reportElement key="image-1" mode="Transparent" x="0" y="0" width="100" height="20" uuid="8557815c-3a09-4bb8-8c9c-263dd59b3d1f"/>
+				<box>
+					<topPen lineWidth="0.0" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineColor="#000000"/>
+				</box>
+				<imageExpression><![CDATA[$P{rutaImagen}+"logo_fiducol.jpg"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="450" y="33" width="44" height="23" forecolor="#CC3300" uuid="8866c859-f09d-4c10-b438-829a4e3b2506"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="13"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FACTURA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="367" y="105" width="131" height="11" uuid="e0718af4-93fe-4508-9a09-c73845bf09be"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RESOLUCIÓN DIAN No. "+$F{NO_RESOLUCION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="367" y="113" width="131" height="11" uuid="d192f2af-45d0-4239-87bd-2b47cd268878"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FECHA: "+$F{FECHAR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="367" y="121" width="131" height="11" uuid="5281af51-e562-41a9-b294-ad633938aac0"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FACTURAS DEL No. "+$F{PREFIJO}+" - "+$F{DESDE}+" AL "+$F{PREFIJO}+" - "+$F{HASTA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="52" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="497" height="47" uuid="bf1d6806-90f9-4874-be7e-bbfd2a77529e"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="8" y="5" width="48" height="11" uuid="4e09854b-4b21-4bcd-8d09-10df61ca2501"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[SEÑOR(ES):]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="15" width="48" height="11" uuid="619ed397-4cc6-42b0-9cd9-59f92404d035"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[NIT o CC:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="25" width="48" height="11" uuid="226b4afc-c3a6-4bd2-b39d-d321a0c3fa87"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[DIRECCIÓN:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="8" y="35" width="48" height="11" uuid="d4020796-a0f3-4749-8f0b-c36d4fbbc645"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[TELÉFONO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="14" width="58" height="11" uuid="f19362b2-5542-4dc4-990a-6e99886e1b28"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="24" width="79" height="11" uuid="424207ee-0146-49fb-9b8a-9418d74f3b50"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[FECHA VENCIMIENTO:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="325" y="4" width="58" height="11" uuid="2cb3b93e-b0fa-4665-9a85-951af0cc4858"/>
+				<textElement>
+					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[CIUDAD:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="56" y="5" width="238" height="11" uuid="30ad0d1a-77da-4e42-b1c2-57d049516e62"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="56" y="15" width="238" height="11" uuid="4c972f8b-0dbd-4014-9911-45caee582ae6"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NIT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="56" y="25" width="238" height="11" uuid="b7e69605-3404-4851-9094-fdbe840583c7"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DIRECCION_COMERCIANTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="56" y="35" width="238" height="11" uuid="148ca582-592e-4c20-afc4-4fe5104e02ae"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($F{TELEFONO} == null ? "" : $F{TELEFONO})]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="406" y="4" width="71" height="11" uuid="23726c65-7b0a-4f71-8777-88490de38ef8"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CIUDAD}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="406" y="14" width="71" height="11" uuid="1731e73a-5a25-4518-b124-b13f34289d22"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="406" y="24" width="71" height="11" uuid="e2c32c53-3ede-4854-aec0-86f46e5f9bf1"/>
+				<textElement>
+					<font fontName="Arial" size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FECHA_VTO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="325" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="10" width="497" height="308" uuid="5d7d1b08-fc5e-4e2d-8a61-81257389aab7"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="347" y="272" width="63" height="11" uuid="7e9d1376-5fd4-496d-8a6e-c7b63cbe0459"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[IVA                    ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="347" y="291" width="63" height="11" uuid="5c5a0217-8359-4784-a3da-c78f55474e32"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[TOTAL              ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="203" y="34" width="58" height="11" uuid="b5bb38c1-d213-4c40-97a1-b9e7f2b48365"/>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="414" y="34" width="58" height="11" uuid="fee2f8eb-43d9-434d-b12c-662042ab1dfc"/>
+				<textElement textAlignment="Left">
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica-Bold"/>
+				</textElement>
+				<text><![CDATA[VALOR]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="10" y="254" width="291" height="60" uuid="59791e49-9ec4-4da3-93a8-c3612d815a55"/>
+				<textElement textAlignment="Justified">
+					<font fontName="Arial" size="7" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Apreciado Comerciante, agradecemos cancelar la factura dentro de los 5 primeros dias del mes. A partir del día 7 se aplicará la tasa de interés de mora permitida por la Superintendencia Financiera. Con el fin de facilitar la aplicación de los pagos, agradecemos que en el momento de efectuar la transferencia o consignación se relacione en la referencia el NIT de la entidad pagadora y/o remitir copia del comprobante de pago a los correos electrónicos: comercial.cursa@gmail.com    asistente.cursa@gmail.com    o al Fax 6035999.
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="497" y="113" width="9" height="205" uuid="a5ac5b72-0f6f-4634-a59c-3ae5c3b82169"/>
+				<textElement textAlignment="Right" rotation="Left">
+					<font fontName="SansSerif" size="6" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[Impreso directamente en computador por Fiduciaria Bancolombia S.A.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="347" y="255" width="63" height="11" uuid="de2b0247-af05-4db9-8b7a-72aaf91b92cf"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[SUBTOTAL       ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="24" y="52" width="291" height="19" uuid="d5c5ccd4-22bc-4b4f-b3e0-29d9c26236d4"/>
+				<textElement>
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{CONCEPTO}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="418" y="51" width="64" height="20" uuid="60262441-9e3f-4668-b472-d26931b50575"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{PRIMA} == null ? "-" : $F{PRIMA} )]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="418" y="76" width="64" height="20" uuid="df5617a6-ded0-4ed2-88b2-36b346c51332"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO}.equals("C")? "" :( ($F{ADMON}+"").equals(new BigDecimal(0).toString()+".00") ? "-" : $F{ADMON})]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="410" y="255" width="78" height="11" uuid="e6e8e17c-da20-405a-af95-58991e3cbffa"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUBTOTAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="410" y="272" width="78" height="11" uuid="18fdb00d-f95e-4b6a-94f0-7f28d04cc4a5"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{IVA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="410" y="291" width="77" height="11" uuid="a18169ed-83a0-4297-bf94-f769d13405ee"/>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{VALOR_POR_RECAUDAR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="24" y="77" width="291" height="19" uuid="c57f897f-145d-4d83-b3b4-4c33fe913938"/>
+				<textElement>
+					<font fontName="Arial" size="7"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TIPO}.equals("C")?"":"Administración"]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="158">
+			<line>
+				<reportElement x="384" y="76" width="106" height="1" uuid="bdba4305-3aa1-4bd4-b1e2-2ef59852562f"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="110" width="247" height="13" uuid="bb129cf2-b955-4db5-9a46-de2c07d51109"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="7" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[ACTUANDO EXCLUSIVAMENTE COMO VOCERO DEL P.A. FIDEICOMISO SAN RAFAEL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="37" width="291" height="20" uuid="764044a3-eb49-4fb6-9c88-997c2275b73a"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="7" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[ESTA FACTURA DE VENTA ES UN TíTULO VALOR SEGÚN LEY 1231 DEL 5 DE NOVIEMBRE DE 2008]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="37" width="83" height="20" uuid="1f961586-713c-4068-86d7-eeb3b6af5720"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="9" isBold="true" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[ACEPTADA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="140" width="511" height="16" forecolor="#FF3300" uuid="4632540a-b227-4982-8451-aa7039a4906e"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{TEXTO}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="384" y="104" width="106" height="1" uuid="3171d111-89bd-4d8f-983e-99d36452d785"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="0" y="11" width="433" height="20" uuid="c9b687c5-f840-449a-9d7c-b7ba50040980"/>
+				<textElement>
+					<font fontName="Arial Narrow" size="7" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[PAGUESE EN LA CUENTA DE AHORROS DE BANCOLOMBIA No. 048-195744-78 A NOMBRE DEL P.A FIDEICOMISO SAN RAFAEL.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="68" width="64" height="11" uuid="c3d88ef2-1aef-4f0d-a6f2-bfb72ae6cb5b"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[FIRMA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="99" width="94" height="11" uuid="86411b9b-67ed-4e2a-8481-3e8d0a90f2ca"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[FIRMA AUTORIZADA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="96" width="64" height="11" uuid="2b2aeba7-2311-4c27-a8cf-c852eb5ba8db"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[C.C.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="82" width="64" height="11" uuid="b646a80d-0ca9-4109-a1ee-699cd73c5438"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[NOMBRE:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="98" width="171" height="1" uuid="779eca72-bb96-4aca-975e-ba471f6797e0"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="384" y="118" width="106" height="1" uuid="baf5cad7-d440-4223-a234-c9e1132d109a"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="384" y="90" width="106" height="1" uuid="01d15636-947d-4438-b710-51ccdbc07c87"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="350" y="110" width="64" height="11" uuid="bb52dc0f-709c-4563-97e8-cf82f5f4bc3e"/>
+				<textElement>
+					<font fontName="Arial" size="7" isBold="false" pdfFontName="Helvetica"/>
+				</textElement>
+				<text><![CDATA[FECHA:]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

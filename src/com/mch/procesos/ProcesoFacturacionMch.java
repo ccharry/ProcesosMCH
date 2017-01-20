@@ -34,6 +34,7 @@ import com.mch.propiedades.servicios.PropiedadServicioCargarArchivo;
 import com.mch.propiedades.servicios.PropiedadServicioEnviarCorreo;
 import com.mch.propiedades.servicios.PropiedadServicioInsertarLog;
 import com.mch.propiedades.servicios.PropiedadServicioInvocarProcedimiento;
+import com.mch.propiedades.servicios.PropiedadServicioReporteHTML;
 import com.mch.utilidades.UtilLecturaPropiedades;
 import com.mch.utilidades.UtilMCH;
 
@@ -90,7 +91,7 @@ public class ProcesoFacturacionMch  implements Job{
 	private ActividadLeerCorreo actividadLeerCorreo = new ActividadLeerCorreo();
 	private ActividadCargarArchivo actividadCargarArchivo = new ActividadCargarArchivo();
 	private ActividadInvocarProcedimiento actividadInvocarProcedimiento = new ActividadInvocarProcedimiento();
-	private ActividadGenerarReportes actividadGenerarReportesZip = new ActividadGenerarReportes();
+	private ActividadGenerarReportes actividadGenerarReportes = new ActividadGenerarReportes();
 	private ActividadEnviarCorreo actividadEnviarCorreo = new ActividadEnviarCorreo();
 
 	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -118,11 +119,14 @@ public class ProcesoFacturacionMch  implements Job{
 			insertarLog(NEGOCIO, "Inició el proceso de Facturación", "Facturación");
 
 			JSONObject obj = actividadLeerCorreo.leerCorreo(NEGOCIO);
+			System.out.println("<----------------------------");
 			System.out.println(obj);
+			System.out.println("<----------------------------");
 			if(obj.isNull("info")){
 				throw new JobExecutionException(obj.toString());
 			}
 			JSONArray array = obj.getJSONArray("info");
+//			System.out.println(array.length()+" ---- ");
 			for(int a = 0 ; a < array.length(); a++){
 				try{
 					emailActual = array.getJSONObject(a).getString("remitente");
@@ -132,13 +136,25 @@ public class ProcesoFacturacionMch  implements Job{
 					}else{
 						NEGOCIO = "FacturacionMch";
 					}
+					System.out.println("<--------------------------->"+asuntoActual+" --- ");
+					/*
+					 * Si se solicita un reporte  se envía y se salta esa itereción
+					 */
+					if(asuntoActual.toUpperCase().contains("REPORT")){
+						System.out.println("ENTRON .. ");
+						System.out.println(enviarCorreo("", "--", array.getJSONObject(a), NEGOCIO, true));
+						continue;
+					}else if(!asuntoActual.toUpperCase().contains("REPORT") && array.getJSONObject(a).getString("ruta").trim().equals("-")){
+						continue;
+					}
+					
 					mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA_TEMPORAL);
 					System.out.println(mensaje);
 					
 					rutaArchivosTemporales = array.getJSONObject(a).getString("ruta");
 					objTemp = new JSONObject(mensaje);
 					if( !objTemp.isNull("errores") && objTemp.getJSONArray("errores").length() > 0){
-						enviarCorreo(null, generarTablaMensaje(objTemp.getJSONArray("errores")), array.getJSONObject(a), NEGOCIO);
+						enviarCorreo(null, generarTablaMensaje(objTemp.getJSONArray("errores")), array.getJSONObject(a), NEGOCIO, false);
 						//invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
 						continue;
 					}
@@ -156,15 +172,15 @@ public class ProcesoFacturacionMch  implements Job{
 						}
 						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
 						//						invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_MOVER_A_HISTORICO).trim().toLowerCase();
-						enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br><p>"+r+"</p>",  array.getJSONObject(a), NEGOCIO);
+						enviarCorreo(rutaArchivo,"Proceso realizado con exíto, se adjunta archivo ZIP con el reporte correspondiente.<br><p>"+r+"</p>",  array.getJSONObject(a), NEGOCIO, false);
 
 					}else{
-						enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a), NEGOCIO);
+						enviarCorreo(null, generarTablaMensaje(r.split(";")), array.getJSONObject(a), NEGOCIO, false);
 						//invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
 					}
 				}catch(Exception e){
-					enviarCorreo("", "Ha ocurrido un error en el proceso de Facturación: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! Facturación"), "SoporteMCH");
-					enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
+					enviarCorreo("", "Ha ocurrido un error en el proceso de Facturación: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! Facturación"), "SoporteMCH", false);
+					enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO, false);
 					insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "Facturación");
 					e.printStackTrace();
 				}
@@ -179,8 +195,8 @@ public class ProcesoFacturacionMch  implements Job{
 			insertarLog(NEGOCIO, "Termina proceso sin errores", "Facturación");
 		} catch (Exception e) {
 			try {
-				enviarCorreo("", "Ha ocurrido un error en el proceso de Facturación: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! Facturación"), "SoporteMCH");
-				enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO);
+				enviarCorreo("", "Ha ocurrido un error en el proceso de Facturación: <br> <br> "+e.getMessage(), new JSONObject().put("remitente", UtilMCH.getEmailSoporte(SOPORTE)).put("asunto", "¡ERROR! Facturación"), "SoporteMCH", false);
+				enviarCorreo("", "Ha ocurrido un error interno, estamos trabajando para resolverlo, pronto nos comunicaremos con usted.", new JSONObject().put("remitente", emailActual).put("asunto", asuntoActual), NEGOCIO, false);
 				insertarLog(NEGOCIO, "Termina proceso con errores: "+e.getMessage(), "Facturación");
 				//invocarProcedimiento("", NEGOCIO, PROCEDIMIENTO_ELIMINAR_TEMPORAL);
 			} catch (Exception e1) {
@@ -192,7 +208,7 @@ public class ProcesoFacturacionMch  implements Job{
 			actividadLeerCorreo = null;
 			actividadCargarArchivo = null;
 			actividadInvocarProcedimiento= null;
-			actividadGenerarReportesZip = null;
+			actividadGenerarReportes = null;
 			actividadEnviarCorreo = null;
 			propServicioCargarArchivo = null;
 			propiedadServicioInvocarProcedimiento = null;
@@ -275,7 +291,7 @@ public class ProcesoFacturacionMch  implements Job{
 	private String generarReporte(String nombreReporte,  String negocio) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException, ZipException, InterruptedException{
 		Map<String, Object> p = new HashMap<String, Object> ();
 		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes/imagenes/"));
-		return actividadGenerarReportesZip.generarReporte(nombreReporte,null, p, UtilMCH.getDataBaseName(negocio));
+		return actividadGenerarReportes.generarReporte(nombreReporte,null, p, UtilMCH.getDataBaseName(negocio));
 	}
 
 	/**
@@ -292,8 +308,11 @@ public class ProcesoFacturacionMch  implements Job{
 	 * @throws IOException
 	 * @throws MessagingException
 	 */
-	private String enviarCorreo(String rutaZip,String mensaje, JSONObject obj, String negocio) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException, MessagingException{
+	private String enviarCorreo(String rutaZip,String mensaje, JSONObject obj, String negocio, boolean isEspecial) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException, MessagingException{
+		System.out.println("<------------------------------------------------------>");
 		System.out.println(obj);
+		System.out.println(mensaje);
+		System.out.println(negocio);
 		if(obj.isNull("remitente") || obj.isNull("asunto")){
 			return null;
 		}
@@ -311,7 +330,8 @@ public class ProcesoFacturacionMch  implements Job{
 		propiedadServicioEnviarCorreo.setDestinatario(obj.getString("remitente"));
 		propiedadServicioEnviarCorreo.setMensaje(mensaje);
 		propiedadServicioEnviarCorreo.setNegocio(negocio);
-		return actividadEnviarCorreo.enviarEmail(propiedadServicioEnviarCorreo);
+		propiedadServicioEnviarCorreo.setDataBase(UtilMCH.getDataBaseName(negocio));
+		return actividadEnviarCorreo.enviarEmail(propiedadServicioEnviarCorreo, isEspecial);
 	}
 
 	/**
@@ -364,6 +384,16 @@ public class ProcesoFacturacionMch  implements Job{
 		}
 	}
 
+	/**
+	 * @param negocio
+	 * @param mensaje
+	 * @param proceso
+	 * @throws JSONException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 * @throws ExcepcionMch
+	 */
 	public void insertarLog(String negocio, String mensaje, String proceso) throws JSONException, IllegalArgumentException, IllegalAccessException, IOException, ExcepcionMch{
 		PropiedadServicioInsertarLog propiedadServicioInsertarLog = new PropiedadServicioInsertarLog();
 		propiedadServicioInsertarLog.setDataBase(UtilMCH.getDataBaseName(negocio));
@@ -375,6 +405,18 @@ public class ProcesoFacturacionMch  implements Job{
 		System.out.println(a);
 		if(!a.isNull("error"))
 			throw new ExcepcionMch(a.toString());
+	}
+	
+	
+	public String generarReporteHTML(String negocio) throws JSONException, IOException, IllegalArgumentException, IllegalAccessException, ExcepcionMch{
+		String consulta = "SELECT CIDEMPRESA EMPRESA, CNUMFACT FACTURA, DFECDOC FECHA_INICIO, DFECVTO VENCIMIENTO, NVALOR VALOR, PORCENTIVA IVA, CDESCR1 DESC1, CDESCR2 DESC2, CDESCR3 DESC3, CDESCR4 DESC4, CDESCR5 DESC5, PARA PARA, CODMIGO MIGO "
+				+ "FROM FACTURAS "
+				+ "ORDER BY DFECDOC DESC";
+		PropiedadServicioReporteHTML propiedadServicioReporteHTML = new PropiedadServicioReporteHTML();
+		propiedadServicioReporteHTML.setDataBase(UtilMCH.getDataBaseName(negocio));
+		propiedadServicioReporteHTML.setConsulta(consulta);
+		propiedadServicioReporteHTML.setNegocio(negocio);
+		return new JSONObject(actividadGenerarReportes.generarReporteHTML(propiedadServicioReporteHTML)).getString("reporte");
 	}
 
 	public static void main(String[] args) throws JSONException, IOException, MessagingException, IllegalArgumentException, IllegalAccessException, ExcepcionMch, ClassNotFoundException, SQLException, JRException, ZipException, InterruptedException, JobExecutionException{

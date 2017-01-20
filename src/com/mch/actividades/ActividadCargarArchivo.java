@@ -136,15 +136,19 @@ public class ActividadCargarArchivo extends TareaEnviarArchivoRest{
 	}
 
 
-	public static void main(String[] args) throws Exception {
-//		List<Object[]> a = new ActividadCargarArchivo().cargarArchivosABaseDatos(new File("E:\\ARCHIVOBASE\\p").listFiles(), new PropiedadServicioCargarArchivo("Pru_SanRafael", "FACTURAS_TEMP", "SanRafael", true));
-//		for(Object[] b : a){
-//			for(Object c : b){
-//				System.out.print(c+" ");
-//			}
-//			System.out.println("---------------");
-//		}
-		String x =  new ActividadCargarArchivo().cargarArchivosABaseDatos(new File("E:\\ARCHIVOBASE\\p").listFiles(), new PropiedadServicioCargarArchivo("Pru_SanRafael", "FACTURAS_TEMP", "SanRafael", true));
-		System.out.println(x);
+	public static void main(String[] args) {
+		//		List<Object[]> a = new ActividadCargarArchivo().cargarArchivosABaseDatos(new File("E:\\ARCHIVOBASE\\p").listFiles(), new PropiedadServicioCargarArchivo("Pru_SanRafael", "FACTURAS_TEMP", "SanRafael", true));
+		//		for(Object[] b : a){
+		//			for(Object c : b){
+		//				System.out.print(c+" ");
+		//			}
+		//			System.out.println("---------------");
+		//		}
+		try{
+			String x =  new ActividadCargarArchivo().cargarArchivosABaseDatos(new File("E:\\ARCHIVOBASE\\p").listFiles(), new PropiedadServicioCargarArchivo("Pru_SanRafael", "FACTURAS_TEMP", "SanRafael", true));
+			System.out.println(x);
+		}catch(Exception e){
+
+		}
 	}
 }

@@ -2,22 +2,26 @@ package com.mch.actividades;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 
 import net.lingala.zip4j.exception.ZipException;
 import net.sf.jasperreports.engine.JRException;
 
+import org.json.JSONException;
+
 import com.mch.excepciones.ExcepcionMch;
+import com.mch.propiedades.servicios.PropiedadServicioReporteHTML;
+import com.mch.tareas.TareaEnviarArchivoRest;
 import com.mch.tareas.TareaGeneradorZip;
 import com.mch.tareas.TareaGenerarReportePDF;
+import com.mch.tareas.TareaPeticion;
 import com.mch.utilidades.UtilMCH;
 
 /**
  * @author Camilo
  * 12/09/2016
  */
-public class ActividadGenerarReportes {
+public class ActividadGenerarReportes  extends TareaEnviarArchivoRest{
 
 	/**
 	 * Metodod que genera un reporte en PDF
@@ -74,7 +78,19 @@ public class ActividadGenerarReportes {
 //		return r;
 //	}
 	
-	
+	/**
+	 * 
+	 * @param nombreReporte
+	 * @param pass
+	 * @param p
+	 * @param DB
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 * @throws ExcepcionMch
+	 * @throws JRException
+	 * @throws IOException
+	 */
 	public String generarReporte(String nombreReporte, String pass, Map<String, Object> p, String DB) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
 		TareaGenerarReportePDF generadorPDF = new TareaGenerarReportePDF();
 		long t = System.currentTimeMillis();
@@ -87,10 +103,33 @@ public class ActividadGenerarReportes {
 		return r;
 	}
 	
-	public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException, ExcepcionMch, JRException, ZipException, InterruptedException {
-		Map<String, Object> p = new HashMap<String, Object> ();
-		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
-		String r = new ActividadGenerarReportes().generarReportesZip("facturaSanRafael","sanrafael", p, "SanRafael");
-		System.out.println(r);
+	
+	/**
+	 * 
+	 * @param prop
+	 * @return
+	 * @throws ExcepcionMch
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	public String generarReporteHTML(PropiedadServicioReporteHTML prop) throws ExcepcionMch, IllegalArgumentException, IllegalAccessException, JSONException, IOException{
+		if((prop.getConsulta()+"").replace("null", "").replace(" ", "").equals(""))
+			throw new ExcepcionMch("No se encontró el artibuto consulta");
+		if((prop.getDataBase()+"").replace("null", "").replace(" ", "").equals(""))
+			throw new ExcepcionMch("No se encontró el artibuto dataBase");
+		TareaPeticion tarea = new TareaPeticion();
+		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(prop);
+		return tarea.POST(generarRutaPeticion("servicioReporteHTML", p)); 
 	}
+	
+	
+	
+//	public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException, ExcepcionMch, JRException, ZipException, InterruptedException {
+//		Map<String, Object> p = new HashMap<String, Object> ();
+//		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
+//		String r = new ActividadGenerarReportes().generarReportesZip("facturaSanRafael","sanrafael", p, "SanRafael");
+//		System.out.println(r);
+//	}
 }

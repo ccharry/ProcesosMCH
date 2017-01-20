@@ -125,7 +125,7 @@ public class ProcesoNominaHospital  implements Job{
 								}
 								if (asuntoActual.toLowerCase().contains("prueba")) {	
 									System.out.println("vA A ESTA BASE DE DATOS::--: "+UtilMCH.getDataBaseName(NEGOCIO)+"Pru");
-									new ActividadImportarExcelHorasExtras(informacion,liquidacion,periodo, UtilMCH.getDataBaseName(NEGOCIO)+"Pru", NEGOCIO);
+									new ActividadImportarExcelHorasExtras(informacion,liquidacion,periodo, UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);
 								}else {
 									new ActividadImportarExcelHorasExtras(informacion,liquidacion,periodo, UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);
 								}

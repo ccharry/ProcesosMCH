@@ -14,6 +14,7 @@ public class PropiedadServicioEnviarCorreo {
 	private String asunto = null;
 	private String mensaje = null;
 	private String negocio = null; 
+	private String dataBase = null;
 	private List<ArchivoBean>archivos = null;
 	
 	/**
@@ -83,6 +84,14 @@ public class PropiedadServicioEnviarCorreo {
 
 	public void setNegocio(String negocio) {
 		this.negocio = negocio;
+	}
+
+	public String getDataBase() {
+		return dataBase;
+	}
+
+	public void setDataBase(String dataBase) {
+		this.dataBase = dataBase;
 	}
 	
 }

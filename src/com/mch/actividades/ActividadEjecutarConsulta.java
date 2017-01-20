@@ -77,10 +77,13 @@ public class ActividadEjecutarConsulta extends TareaEnviarArchivoRest{
 		JSONArray retorno = new JSONArray(r);
 		return retorno;
 	}
-	
-	
-	public static void main(String[] args) throws IllegalArgumentException, IllegalAccessException, JSONException, ExcepcionMch, IOException {
+
+	public static void main(String[] args) {
+		try{
 		PropiedadesServicioEjecutarConsulta p = new PropiedadesServicioEjecutarConsulta("MCH", "SELECT COUNT(*)D FROasM FACTURAS", "FacturacionMch");
 		System.out.println(new ActividadEjecutarConsulta().ejecutarConsulta(p));
+		}catch(Exception e){
+			
+		}
 	}
 }
