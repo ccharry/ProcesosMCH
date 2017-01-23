@@ -12,6 +12,7 @@
     	"servicioEnviarCorreoEspecial":"enviarCorreo/e",
     	"servicioLeerCorreo":"lecturaCorreo",
     	"servicioCargarArchivoExcel":"cargarArchivo",
+    	"servicioCargarArchivoExcelHoras":"cargarArchivo/cargarArchivoHoras",
     	"servicioLeerArchivoExcel":"cargarArchivo/leer",
     	"servicioInvocarProcedimiento":"invocarProcedimiento",
     	"servicioInsertarLog":"insertarLog",

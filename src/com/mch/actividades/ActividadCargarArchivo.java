@@ -109,6 +109,23 @@ public class ActividadCargarArchivo extends TareaEnviarArchivoRest{
 	}
 
 	/**
+	 * @param archivo
+	 * @param config
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 * @throws JSONException
+	 * @throws IOException
+	 * @throws ExcepcionMch
+	 * @throws MessagingException
+	 */
+	public Object enviarArchivo(File archivo, PropiedadServicioCargarArchivo config) throws IllegalArgumentException, IllegalAccessException, JSONException, IOException, ExcepcionMch, MessagingException{
+		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(config);
+		String URL = generarRutaPeticion("servicioCargarArchivoExcelHoras",p);
+		return enviarArchivo2(URL, new ArchivoBean(archivo));
+	}
+	
+	/**
 	 * Metodo que organiza la información
 	 * que llega en un formato para ponerla
 	 * en una matriz.

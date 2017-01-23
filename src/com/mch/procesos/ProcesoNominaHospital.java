@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 
 import javax.mail.MessagingException;
 
+import net.lingala.zip4j.exception.ZipException;
+import net.sf.jasperreports.engine.JRException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,9 +31,6 @@ import com.mch.propiedades.servicios.PropiedadServicioCargarArchivo;
 import com.mch.propiedades.servicios.PropiedadServicioEnviarCorreo;
 import com.mch.propiedades.servicios.PropiedadServicioInsertarLog;
 import com.mch.utilidades.UtilMCH;
-
-import net.lingala.zip4j.exception.ZipException;
-import net.sf.jasperreports.engine.JRException;
 
 /**
  * @author Camilo
@@ -131,6 +131,22 @@ public class ProcesoNominaHospital  implements Job{
 								}
 							}else if(archivo.getName().replace(" ", "").toLowerCase().contains("nving")){
 								new ActividadImportarTrabajadoresNuevos(informacion, archivo.getName(), UtilMCH.getDataBaseName(NEGOCIO), NEGOCIO);	
+							}else if(archivo.getName().replace(" ", "").toLowerCase().contains("liqrec")){
+								PropiedadServicioCargarArchivo prop = new PropiedadServicioCargarArchivo();
+								prop.setDataBase(UtilMCH.getDataBaseName(NEGOCIO));
+								prop.setNegocio(NEGOCIO);
+								prop.setTabla("");
+								prop.setValidarTipoDatos(false);
+								Object o = actividadCargarArchivo.enviarArchivo(archivo, prop);
+								if(o instanceof File){
+									enviarCorreo(o.toString(), "Proceso realizado con exíto",  array.getJSONObject(a), NEGOCIO);
+									System.out.println(o.toString());
+									System.out.println(new File("ELIMINA -> "+o.toString()).delete());
+									return;
+								}else{
+									enviarCorreo(null, "Ha ocurrido un error al momento de importar el archivo: "+o.toString(),  array.getJSONObject(a), NEGOCIO);
+									return;
+								}
 							}else{
 								throw new ExcepcionMch("No se pudo determinar el proceso para el archivo: "+archivo.getName());
 							}
@@ -201,7 +217,7 @@ public class ProcesoNominaHospital  implements Job{
 			return null;
 		}
 		insertarLog(negocio, "Envia correo", "Hospital Tomas");
-		rutaZip = (rutaZip+"").replace("null", "").replace(" ", "");
+		rutaZip = (rutaZip+"").replace("null", "").trim();
 		if(!rutaZip.equals("")){
 			List<ArchivoBean> archivos = new ArrayList<ArchivoBean>();
 			archivoBean = new ArchivoBean(new File(rutaZip));
