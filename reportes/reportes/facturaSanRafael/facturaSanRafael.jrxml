@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
 	<property name="ireport.zoom" value="2.4157650000000013"/>
-	<property name="ireport.x" value="124"/>
-	<property name="ireport.y" value="528"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="192"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
@@ -105,14 +105,14 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textElement>
 					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
 				</textElement>
-				<text><![CDATA[NIT. 830.052.539]]></text>
+				<text><![CDATA[NIT. 830.054.539-0]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="60" width="146" height="11" uuid="24962b00-d99d-443e-8f5b-395437482de0"/>
 				<textElement>
 					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
 				</textElement>
-				<text><![CDATA[CALLE 137 No. 47-01    TEL: 6085999]]></text>
+				<text><![CDATA[CALLE 137 No. 47-01    TEL: 6035999]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="70" width="58" height="11" uuid="2dc2d889-b239-4048-bd87-d44cc53973ff"/>
@@ -349,7 +349,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<text><![CDATA[SUBTOTAL       ]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="24" y="52" width="291" height="35" uuid="d5c5ccd4-22bc-4b4f-b3e0-29d9c26236d4"/>
+				<reportElement x="24" y="52" width="291" height="38" uuid="d5c5ccd4-22bc-4b4f-b3e0-29d9c26236d4"/>
 				<textElement>
 					<font fontName="Arial" size="7"/>
 				</textElement>
@@ -363,7 +363,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textFieldExpression><![CDATA[( $F{PRIMA} == null ? "-" : $F{PRIMA} )]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
-				<reportElement x="418" y="87" width="64" height="20" uuid="df5617a6-ded0-4ed2-88b2-36b346c51332"/>
+				<reportElement x="418" y="90" width="64" height="20" uuid="df5617a6-ded0-4ed2-88b2-36b346c51332"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="7"/>
 				</textElement>
@@ -391,7 +391,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textFieldExpression><![CDATA[$F{VALOR_POR_RECAUDAR}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="24" y="87" width="291" height="19" uuid="c57f897f-145d-4d83-b3b4-4c33fe913938"/>
+				<reportElement x="24" y="91" width="291" height="19" uuid="c57f897f-145d-4d83-b3b4-4c33fe913938"/>
 				<textElement>
 					<font fontName="Arial" size="7"/>
 				</textElement>
