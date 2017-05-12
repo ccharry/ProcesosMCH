@@ -1,15 +1,20 @@
 package com.mch.actividades;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
+
+import javax.mail.MessagingException;
 
 import net.lingala.zip4j.exception.ZipException;
 import net.sf.jasperreports.engine.JRException;
 
 import org.json.JSONException;
 
+import com.mch.bean.ArchivoBean;
 import com.mch.excepciones.ExcepcionMch;
+import com.mch.propiedades.servicios.PropiedadGenerarReporte;
 import com.mch.propiedades.servicios.PropiedadServicioReporteHTML;
 import com.mch.tareas.TareaEnviarArchivoRest;
 import com.mch.tareas.TareaGeneradorZip;
@@ -42,7 +47,7 @@ public class ActividadGenerarReportes  extends TareaEnviarArchivoRest{
 		TareaGenerarReportePDF generadorPDF = new TareaGenerarReportePDF();
 		TareaGeneradorZip generadorZip = new TareaGeneradorZip();
 		String r = null, retorno;
-		
+
 		try{
 			r = generadorPDF.generarPDF(nombreReporte, t, p, DB);
 			retorno = generadorZip.crearZipPorRuta1(r, nombreReporte, t, pass);
@@ -53,7 +58,7 @@ public class ActividadGenerarReportes  extends TareaEnviarArchivoRest{
 		}
 		return retorno;
 	}
-	
+
 	/**
 	 * Metodo que genera un reporte en PDF con contraseña
 	 * @param nombreReporte
@@ -66,18 +71,18 @@ public class ActividadGenerarReportes  extends TareaEnviarArchivoRest{
 	 * @throws JRException
 	 * @throws IOException
 	 */
-//	public String generarReporte(String nombreReporte, String pass, Map<String, Object> p, String DB) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
-//		TareaGenerarReportePDF generadorPDF = new TareaGenerarReportePDF();
-//		long t = System.currentTimeMillis();
-//		String r = null;
-//		try{
-//			r = generadorPDF.generarPDF(nombreReporte, t, p, DB);
-//		}finally{
-//			generadorPDF = null;
-//		}
-//		return r;
-//	}
-	
+	//	public String generarReporte(String nombreReporte, String pass, Map<String, Object> p, String DB) throws ClassNotFoundException, SQLException, ExcepcionMch, JRException, IOException{
+	//		TareaGenerarReportePDF generadorPDF = new TareaGenerarReportePDF();
+	//		long t = System.currentTimeMillis();
+	//		String r = null;
+	//		try{
+	//			r = generadorPDF.generarPDF(nombreReporte, t, p, DB);
+	//		}finally{
+	//			generadorPDF = null;
+	//		}
+	//		return r;
+	//	}
+
 	/**
 	 * 
 	 * @param nombreReporte
@@ -102,8 +107,8 @@ public class ActividadGenerarReportes  extends TareaEnviarArchivoRest{
 		}
 		return r;
 	}
-	
-	
+
+
 	/**
 	 * 
 	 * @param prop
@@ -123,13 +128,33 @@ public class ActividadGenerarReportes  extends TareaEnviarArchivoRest{
 		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(prop);
 		return tarea.POST(generarRutaPeticion("servicioReporteHTML", p)); 
 	}
-	
-	
-	
-//	public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException, ExcepcionMch, JRException, ZipException, InterruptedException {
-//		Map<String, Object> p = new HashMap<String, Object> ();
-//		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
-//		String r = new ActividadGenerarReportes().generarReportesZip("facturaSanRafael","sanrafael", p, "SanRafael");
-//		System.out.println(r);
-//	}
+
+	public Object generarReporteExcelXlsx(File archivo, PropiedadGenerarReporte prop) throws ExcepcionMch, IllegalArgumentException, IllegalAccessException, JSONException, IOException, MessagingException{
+
+		if((prop.getNegocio()+"").replace("null", "").replace(" ", "").equals(""))
+			throw new ExcepcionMch("No se encontró el artibuto negocio");
+		if((prop.getDataBase()+"").replace("null", "").replace(" ", "").equals(""))
+			throw new ExcepcionMch("No se encontró el artibuto dataBase");
+		Map<String, Object> p = UtilMCH.generarMapPorPropiedad(prop);
+		
+		String URL = generarRutaPeticion("servicioGenerarReporteXlsx",p);
+System.out.println(URL);
+		return enviarArchivo2(URL, new ArchivoBean(archivo));
+	}
+
+
+public static void main(String[] args) {
+	try{
+	Object e = new ActividadGenerarReportes().generarReporteExcelXlsx(new File("E:\\davivienda.xls"), new PropiedadGenerarReporte("SanRafael", "SanRafael"));
+	System.out.println(e);
+	}catch(Exception e){
+		e.printStackTrace();
+	}
+}
+	//	public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException, ExcepcionMch, JRException, ZipException, InterruptedException {
+	//		Map<String, Object> p = new HashMap<String, Object> ();
+	//		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes"));
+	//		String r = new ActividadGenerarReportes().generarReportesZip("facturaSanRafael","sanrafael", p, "SanRafael");
+	//		System.out.println(r);
+	//	}
 }

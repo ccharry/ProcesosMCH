@@ -121,7 +121,7 @@ public class TareaEnviarArchivoRest extends TareaGenerarRutaPeticion{
 
 
 	public static void main(String[] args) throws IOException, MessagingException {
-		String url = "http://192.168.1.27:8081/ServiciosMCH/rest/cargarArchivo/cargarArchivoHoras/SDF";
+		String url = "http://192.168.1.27:8081/ServiciosMCH/rest/generarReporte/";
 		Object a = new TareaEnviarArchivoRest().enviarArchivo2(url, new ArchivoBean(new File("E:/ARCHIVOBASE/Liq Rec Médicos y Especialistas julio.xlsx")));
 		System.out.println(a);
 	}
