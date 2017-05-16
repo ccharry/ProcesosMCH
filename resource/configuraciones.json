@@ -5,7 +5,7 @@
     {
     	"configuracionGeneral":"si",
     	"protocolo":"http",
-    	"ipServidor":"192.168.2.5",
+    	"ipServidor":"192.168.1.27",
     	"puerto":"8081",
     	"proyecto":"ServiciosMCH",
     	"servicioEnviarCorreo":"enviarCorreo",
@@ -64,6 +64,19 @@
 		"dataBase":"NmwHospitalPru",
 		"rutaDescarga":"\\\\192.168.2.5\\E$\\ARCHIVOS_DESCARGA_PRUEBA",
 		"generarZIP":false
+	},
+	{
+		"negocio":"Devisab",
+		"dataBase":"Devisab",
+		"rutaDescarga":"\\\\192.168.2.5\\E$\\ARCHIVOS_DESCARGA_PRUEBA",
+		"generarZIP":false
+	},
+	{
+	"configuracionesDB" : {
+			"server" : "192.168.1.18",
+			"username" : "sa",
+			"password" : "1qazXSW2"
+	}
 	}
 	
 ]

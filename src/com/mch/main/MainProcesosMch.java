@@ -20,6 +20,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.mch.excepciones.ExcepcionMch;
+import com.mch.procesos.ProcesoDevisab;
 import com.mch.procesos.ProcesoFacturacionMch;
 import com.mch.procesos.ProcesoNominaHospital;
 import com.mch.procesos.ProcesoSanRafael;
@@ -121,17 +122,15 @@ public class MainProcesosMch {
 		JobDetail job3 = JobBuilder.newJob(ProcesoNominaHospital.class).withIdentity("procesoNominaHospital", "group3").build();
 		Trigger trigger3 = TriggerBuilder.newTrigger().withIdentity("triggerProcesoFacturacion", "group3").withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo).repeatForever()).build();
 		
-//		JobDetail job3 = JobBuilder.newJob(ProcesoPruebasSanRafael.class).withIdentity("procesoPruebasSanRafael", "group1").build();
-//		Trigger trigger3 = TriggerBuilder.newTrigger() .withIdentity("triggerProcesoSanRafael", "group1") .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo+2).repeatForever()).build();
-//		
-//		JobDetail job4 = JobBuilder.newJob(ProcesoPruebasFacturacionMch.class).withIdentity("procesoPruebasFacturacion", "group2").build();
-//		Trigger trigger4 = TriggerBuilder.newTrigger().withIdentity("triggerProcesoFacturacion", "group2").withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo+3).repeatForever()).build();
+		JobDetail job4 = JobBuilder.newJob(ProcesoDevisab.class).withIdentity("procesoDevisab", "group4").build();
+		Trigger trigger4 = TriggerBuilder.newTrigger().withIdentity("triggerProcesoDevisab", "group4").withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo+1).repeatForever()).build();
+		
 
 		Scheduler scheduler = new StdSchedulerFactory().getScheduler();
 		scheduler.start();
 		scheduler.scheduleJob(job, trigger);
 		scheduler.scheduleJob(job2, trigger2);
 		scheduler.scheduleJob(job3, trigger3);
-//		scheduler.scheduleJob(job4, trigger4);
+		scheduler.scheduleJob(job4, trigger4);
 	}
 }
