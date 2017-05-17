@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
-	<property name="ireport.zoom" value="2.9230756500000066"/>
-	<property name="ireport.x" value="759"/>
-	<property name="ireport.y" value="275"/>
+	<property name="ireport.zoom" value="4.279675059165017"/>
+	<property name="ireport.x" value="402"/>
+	<property name="ireport.y" value="277"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
@@ -14,12 +14,12 @@
 FACTURA,
 STUFF(CONVERT(VARCHAR(12), FECHA, 107), 1,3,DATENAME(month,FECHA))FECHA,
 STUFF(CONVERT(VARCHAR(12), FECHA_DE_VENCIMIENTO, 107), 1,3,DATENAME(month,FECHA_DE_VENCIMIENTO))FECHA_VTO,
-SEÑOR,
+RAZON_SOCIAL,
 DIRECCION,
 TELEFONO,
 CIUDAD,
 NIT,
-TOTAL,
+VALOR_TOTAL,
 CONCEPTO,
 DFECSIST,
 EMAIL_USUARIO,
@@ -38,12 +38,12 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 	<field name="FACTURA" class="java.lang.String"/>
 	<field name="FECHA" class="java.lang.String"/>
 	<field name="FECHA_VTO" class="java.lang.String"/>
-	<field name="SEÑOR" class="java.lang.String"/>
+	<field name="RAZON_SOCIAL" class="java.lang.String"/>
 	<field name="DIRECCION" class="java.lang.String"/>
 	<field name="TELEFONO" class="java.lang.String"/>
 	<field name="CIUDAD" class="java.lang.String"/>
 	<field name="NIT" class="java.lang.String"/>
-	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<field name="VALOR_TOTAL" class="java.math.BigDecimal"/>
 	<field name="CONCEPTO" class="java.lang.String"/>
 	<field name="DFECSIST" class="java.sql.Timestamp"/>
 	<field name="EMAIL_USUARIO" class="java.lang.String"/>
@@ -57,7 +57,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 			<staticText>
 				<reportElement x="243" y="31" width="127" height="19" uuid="3752e1ab-51ae-4cd4-b09a-bdcba5df927d"/>
 				<textElement>
-					<font fontName="Bernard MT Condensed" size="8" isBold="true" isUnderline="false" pdfFontName="Helvetica" isPdfEmbedded="true"/>
+					<font fontName="Arial" size="8" isBold="true" isUnderline="false" pdfFontName="Helvetica" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[- FIDEICOMISO P.A DEVISAB]]></text>
 			</staticText>
@@ -78,7 +78,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 			<staticText>
 				<reportElement x="0" y="31" width="243" height="19" uuid="6570d914-aac8-419f-b5f9-337d0d16b970"/>
 				<textElement>
-					<font fontName="Arial" size="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+					<font fontName="Arial" size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
 				</textElement>
 				<text><![CDATA[PATRIMONIOS AUTONOMOS FIDUCIARIA BANCOLOMBIA S.A. ]]></text>
 			</staticText>
@@ -226,7 +226,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textElement>
 					<font fontName="Arial" size="6"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{SEÑOR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{RAZON_SOCIAL}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="56" y="15" width="238" height="11" uuid="4c972f8b-0dbd-4014-9911-45caee582ae6"/>
@@ -270,6 +270,48 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{FECHA_VTO}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="56" y="12" width="238" height="1" uuid="f5fec8bc-9029-452c-b598-03045ed3d9f5"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="56" y="22" width="238" height="1" uuid="a8e268e2-50bf-4d4b-b751-bbd8c5a480ec"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="56" y="32" width="238" height="1" uuid="5f27c3b5-1b49-4a42-9273-36165c30e4e3"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="56" y="42" width="238" height="1" uuid="ba83b914-0ccc-457a-b600-cf67fc87fcde"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="404" y="21" width="73" height="1" uuid="eb3cd1b7-3fc1-490e-a831-8db4d49c6de3"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="404" y="31" width="73" height="1" uuid="c810a607-e3f5-400d-9855-6c8d6a0a4f6c"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="404" y="11" width="73" height="1" uuid="9aa2dc89-f73e-4409-94ef-522e29c36a0c"/>
+				<graphicElement>
+					<pen lineWidth="0.75"/>
+				</graphicElement>
+			</line>
 		</band>
 	</columnHeader>
 	<detail>
@@ -327,21 +369,21 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{VALOR_TOTAL}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
 				<reportElement x="410" y="255" width="78" height="11" uuid="e6e8e17c-da20-405a-af95-58991e3cbffa"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{VALOR_TOTAL}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0">
 				<reportElement x="410" y="289" width="77" height="11" uuid="a18169ed-83a0-4297-bf94-f769d13405ee"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="7"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{VALOR_TOTAL}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="347" y="272" width="63" height="11" uuid="a250c860-bb63-49ab-bb83-1fd07bde4f3c"/>
@@ -366,7 +408,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement x="0" y="110" width="247" height="13" uuid="bb129cf2-b955-4db5-9a46-de2c07d51109"/>
+				<reportElement x="0" y="110" width="294" height="13" uuid="bb129cf2-b955-4db5-9a46-de2c07d51109"/>
 				<textElement>
 					<font fontName="Arial Narrow" size="7" pdfFontName="Helvetica"/>
 				</textElement>

@@ -86,7 +86,8 @@ public class TareaGenerarReportePDF {
 
 	public String generarPDF(String nombreReporte, long time, Map<String, Object>parametros, String pass, String DB) throws ExcepcionMch {
 		long t = System.currentTimeMillis();
-
+		System.out.println("Va a imprimir factura desde procesos: ");
+		System.out.println(nombreReporte+" -- "+parametros+" -- "+DB);
 		String ruta = UtilMCH.getRutaProyecto().replace("bin", "reportes/"),
 				ruta2 = ruta+"temporales/temporal_"+t+"/";
 		try {
@@ -128,12 +129,13 @@ public class TareaGenerarReportePDF {
 		//		System.out.println(ruta+"temporales");
 
 		Map<String, Object> p = new HashMap<String, Object> ();
-		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes\\"));
+//		p.put("rutaImagen", UtilMCH.getRutaProyecto().replace("bin", "imagenes\\"));
+		p.put("rutaImagen", "E:\\RepositorioGITPortal\\ProcesosMCH\\imagenes/imagenes/");
 		System.out.println(p);
 		String a;
 		try {
-			//tring nombreReporte, long time, Map<String, Object>parametros
-			a = new TareaGenerarReportePDF().generarPDF("facturaMch", 123, p, "MCH");
+			//tring nombreReporte, long time, Map<String, Object>parametrosDevisab
+			a = new TareaGenerarReportePDF().generarPDF("facturaDevisab", 123, p, "Devisab");
 			System.out.println(a);
 			System.out.println(new File(a).length());;
 		} catch (ExcepcionMch e) {
