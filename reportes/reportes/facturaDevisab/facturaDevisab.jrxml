@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
-	<property name="ireport.zoom" value="4.279675059165017"/>
-	<property name="ireport.x" value="402"/>
-	<property name="ireport.y" value="277"/>
+	<property name="ireport.zoom" value="1.9965000000000075"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="960"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
@@ -101,14 +101,14 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textElement>
 					<font fontName="Arial" size="6" isBold="false" pdfFontName="Helvetica"/>
 				</textElement>
-				<text><![CDATA[BOGOTÁ D.C.]]></text>
+				<text><![CDATA[BOGOTÁ, D.C.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="65" y="76" width="433" height="7" uuid="40e26879-9be7-428d-a63b-ce50580d3859"/>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="5" isBold="false" pdfFontName="Helvetica"/>
 				</textElement>
-				<text><![CDATA[NO PRACTICAR RETENCIÓN DE IMPUESTO DE RENTA EL PATRIMONIO AUTONOMO ES NO CONTRIBUYENTE SEGÚN ARTÍCULO 102 DEL ESTATUTO TRIBUTRARIO]]></text>
+				<text><![CDATA[NO PRACTICAR RETENCIÓN DE IMPUESTO DE RENTA, EL PATRIMONIO AUTONOMO ES NO CONTRIBUYENTE SEGÚN ARTÍCULO 102 DEL ESTATUTO TRIBUTRARIO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="65" y="83" width="433" height="7" uuid="5f3cb51b-c953-4677-be36-41949660b859"/>
@@ -415,11 +415,11 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<text><![CDATA[ACTUANDO EXCLUSIVAMENTE COMO VOCERO DEL P.A. FIDEICOMISO DEVISAB]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="35" width="291" height="20" uuid="764044a3-eb49-4fb6-9c88-997c2275b73a"/>
+				<reportElement x="0" y="35" width="315" height="20" uuid="764044a3-eb49-4fb6-9c88-997c2275b73a"/>
 				<textElement>
 					<font fontName="Arial Narrow" size="7" pdfFontName="Helvetica"/>
 				</textElement>
-				<text><![CDATA[ESTA FACTURA DE VENTA ES UN TíTULO VALOR SEGÚN LEY 1231 DEL 5 DE NOVIEMBRE DE 2008]]></text>
+				<text><![CDATA[ESTA FACTURA DE VENTA ES UN TíTULO VALOR SEGÚN LEY 1231 DEL 17 DE JULIO DE 2008]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="350" y="37" width="83" height="20" uuid="1f961586-713c-4068-86d7-eeb3b6af5720"/>
