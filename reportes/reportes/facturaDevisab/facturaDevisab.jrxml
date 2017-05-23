@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
 	<property name="ireport.zoom" value="1.9965000000000075"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="960"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
@@ -80,7 +80,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textElement>
 					<font fontName="Arial" size="8" isBold="false" pdfFontName="Helvetica-Bold"/>
 				</textElement>
-				<text><![CDATA[PATRIMONIOS AUTONOMOS FIDUCIARIA BANCOLOMBIA S.A. ]]></text>
+				<text><![CDATA[PATRIMONIOS AUTÒNOMOS FIDUCIARIA BANCOLOMBIA S.A. ]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="50" width="58" height="11" uuid="327cdf51-63f5-4c0f-b3ce-66076aa56ca5"/>
@@ -108,7 +108,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="5" isBold="false" pdfFontName="Helvetica"/>
 				</textElement>
-				<text><![CDATA[NO PRACTICAR RETENCIÓN DE IMPUESTO DE RENTA, EL PATRIMONIO AUTONOMO ES NO CONTRIBUYENTE SEGÚN ARTÍCULO 102 DEL ESTATUTO TRIBUTRARIO]]></text>
+				<text><![CDATA[NO PRACTICAR RETENCIÓN DE IMPUESTO DE RENTA, EL PATRIMONIO AUTÒNOMO ES NO CONTRIBUYENTE SEGÚN ARTÍCULO 102 DEL ESTATUTO TRIBUTARIO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="65" y="83" width="433" height="7" uuid="5f3cb51b-c953-4677-be36-41949660b859"/>
