@@ -115,7 +115,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="5" isBold="false" pdfFontName="Helvetica"/>
 				</textElement>
-				<text><![CDATA[SOMOS GRANDES CONTRIBUYENTES, RESPONSABLE DE IMPUESTOS SOBRE LAS VENTAS, AGENTE RETENEDOR DE I.V.A.]]></text>
+				<text><![CDATA[SOMOS GRANDES CONTRIBUYENTES, RESPONSABLE DE IMPUESTOS SOBRE LAS VENTAS, AGENTE RETENEDOR DEL I.V.A.]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="65" y="90" width="433" height="15" uuid="a9cc6d70-272b-4ac0-abcb-400ee3ff9417"/>
