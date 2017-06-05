@@ -28,6 +28,7 @@ TEXTO
 FROM FACTURAS
 LEFT JOIN COPIAS
 ON 1 = 1
+
 ORDER BY CAST(FACTURA AS NUMERIC)]]>
 	</queryString>
 	<field name="DESDE" class="java.math.BigDecimal"/>

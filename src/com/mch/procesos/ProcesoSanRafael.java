@@ -129,6 +129,25 @@ public class ProcesoSanRafael implements Job{
 					if(emailActual.toLowerCase().contains("sistematizando")){
 						NEGOCIO = "PruebasSanRafael";
 					}else{
+						JSONArray correos = UtilLecturaPropiedades.getInstancia().getPropJson("restricciones", "si").getJSONArray("listaValida");
+						System.out.println("------> "+correos);
+						for(int x = 0 ; x < correos.length() ; x++){
+							System.out.println("<>>>>>>>>>>>>>>>>>"+correos.getJSONObject(x)+" -- "+correos.getJSONObject(x).getString("negocio")+" -- "+NEGOCIO);
+							if(correos.getJSONObject(x).getString("negocio").equals(NEGOCIO)){
+								JSONArray correosValidos = correos.getJSONObject(x).getJSONArray("correos");
+								int conteoCorreos = 0;
+								for(int z = 0 ; z < correosValidos.length() ; z++){
+									if(correosValidos.getString(z).trim().toLowerCase().equals(emailActual.trim().toLowerCase())){
+										conteoCorreos ++;
+									}
+								}
+								if(conteoCorreos == 0){
+									enviarCorreo(null, generarTablaMensaje(new String[]{"El correo: "+emailActual+" no está autorizado para generar facturas."}), array.getJSONObject(a), NEGOCIO);
+									return;
+								}
+								
+							}
+						}
 						NEGOCIO = "SanRafael";
 					}
 					mensaje = cargarArchivosDB(array.getJSONObject(a), NEGOCIO, TABLA_TEMPORAL);
