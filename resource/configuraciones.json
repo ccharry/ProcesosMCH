@@ -22,6 +22,10 @@
     	"servicioQuery":"crud/e",
     	"servicioReporteHTML":"generarReporteHTML",
     	"servicioGenerarReporteXlsx":"generarReporte"
+    },{
+    	"restricciones": "si",
+    	"listaValida":[{"negocio" : "Devisab", correos:["lialruiz@bancolombia.com.co"]},{"negocio": "SanRafael", correos:["marvaneg@bancolombia.com.co", "yvalero@Bancolombia.com.co"]}]
+    
     },
 	{
 		"negocio":"SanRafael",
