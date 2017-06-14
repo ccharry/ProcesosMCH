@@ -4,7 +4,7 @@
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.331000000000001"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="248"/>
 	<import value="com.mch.utilidades.UtilidadCantidadEnLetras"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -645,7 +645,7 @@ FIRMA Y SELLO DEL CLIENTE]]></text>
 					<font fontName="Arial" size="6"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[Impreso directamente en computador por MCH Sistematizando Ltda.]]></text>
+				<text><![CDATA[Impresa en computador por Charry - MCH Sistematizando Ltda.  800.002.763-2]]></text>
 			</staticText>
 			<textField pattern="#,##0" isBlankWhenNull="false">
 				<reportElement key="textField-6" x="460" y="32" width="80" height="18" uuid="6edec82e-ade4-43a1-ada2-a0c071c79401"/>

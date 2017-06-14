@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
-	<property name="ireport.zoom" value="2.4157650000000013"/>
+	<property name="ireport.zoom" value="1.5000000000000007"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="192"/>
+	<property name="ireport.y" value="473"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
@@ -335,11 +335,11 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="497" y="113" width="9" height="205" uuid="a5ac5b72-0f6f-4634-a59c-3ae5c3b82169"/>
-				<textElement textAlignment="Right" rotation="Left">
-					<font fontName="SansSerif" size="6" isBold="true" pdfFontName="Helvetica"/>
+				<reportElement x="497" y="70" width="9" height="247" uuid="a5ac5b72-0f6f-4634-a59c-3ae5c3b82169"/>
+				<textElement rotation="Left">
+					<font fontName="SansSerif" size="6" isBold="false" pdfFontName="Helvetica"/>
 				</textElement>
-				<text><![CDATA[Impreso directamente en computador por Fiduciaria Bancolombia S.A.]]></text>
+				<text><![CDATA[Impresa en computador por Charry - MCH Sistematizando Ltda.  800.002.763-2]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="347" y="255" width="63" height="11" uuid="de2b0247-af05-4db9-8b7a-72aaf91b92cf"/>
