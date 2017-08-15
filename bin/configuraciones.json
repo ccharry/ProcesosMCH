@@ -21,7 +21,8 @@
     	"servicioInsertar":"crud/i",
     	"servicioQuery":"crud/e",
     	"servicioReporteHTML":"generarReporteHTML",
-    	"servicioGenerarReporteXlsx":"generarReporte"
+    	"servicioGenerarReporteXlsx":"generarReporte",
+    	"servicionTrm":"TRM"
     },{
     	"restricciones": "si",
     	"listaValida":[{"negocio" : "Devisab", correos:["lialruiz@bancolombia.com.co"]},{"negocio": "SanRafael", correos:["marvaneg@bancolombia.com.co", "yvalero@Bancolombia.com.co"]}]
@@ -77,7 +78,13 @@
 	},
 	{
 		"negocio":"PruebasDevisab",
-		"dataBase":"Devisab",
+		"dataBase":"PruebasDevisab",
+		"rutaDescarga":"\\\\192.168.2.5\\E$\\ARCHIVOS_DESCARGA_PRUEBA",
+		"generarZIP":false
+	},
+	{
+		"negocio":"Cortiss",
+		"dataBase":"Cortissoz",
 		"rutaDescarga":"\\\\192.168.2.5\\E$\\ARCHIVOS_DESCARGA_PRUEBA",
 		"generarZIP":false
 	},

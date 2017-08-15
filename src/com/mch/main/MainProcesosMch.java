@@ -20,6 +20,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.mch.excepciones.ExcepcionMch;
+import com.mch.procesos.ProcesoCortissTrm;
 import com.mch.procesos.ProcesoDevisab;
 import com.mch.procesos.ProcesoFacturacionMch;
 import com.mch.procesos.ProcesoNominaHospital;
@@ -124,6 +125,9 @@ public class MainProcesosMch {
 		
 		JobDetail job4 = JobBuilder.newJob(ProcesoDevisab.class).withIdentity("procesoDevisab", "group4").build();
 		Trigger trigger4 = TriggerBuilder.newTrigger().withIdentity("triggerProcesoDevisab", "group4").withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo+1).repeatForever()).build();
+
+		JobDetail job5 = JobBuilder.newJob(ProcesoCortissTrm.class).withIdentity("procesoCortiss", "group5").build();
+		Trigger trigger5 = TriggerBuilder.newTrigger().withIdentity("triggerProcesoCortiss", "group5").withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInMinutes(tiempo).repeatForever()).build();
 		
 
 		Scheduler scheduler = new StdSchedulerFactory().getScheduler();
@@ -132,5 +136,6 @@ public class MainProcesosMch {
 		scheduler.scheduleJob(job2, trigger2);
 		scheduler.scheduleJob(job3, trigger3);
 		scheduler.scheduleJob(job4, trigger4);
+		scheduler.scheduleJob(job5, trigger5);
 	}
 }
