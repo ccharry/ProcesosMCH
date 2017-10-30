@@ -24,7 +24,7 @@
     	"servicioGenerarReporteXlsx":"generarReporte"
     },{
     	"restricciones": "si",
-    	"listaValida":[{"negocio" : "Devisab", correos:["lialruiz@bancolombia.com.co"]},{"negocio": "SanRafael", correos:["marvaneg@bancolombia.com.co", "yvalero@Bancolombia.com.co"]}]
+    	"listaValida":[{"negocio" : "Devisab", correos:["lialruiz@bancolombia.com.co","JECAMACH@bancolombia.com.co"]},{"negocio": "SanRafael", correos:["marvaneg@bancolombia.com.co", "yvalero@Bancolombia.com.co", "japromer@Bancolombia.com.co"]}]
     
     },
 	{
@@ -77,7 +77,7 @@
 	},
 	{
 		"negocio":"PruebasDevisab",
-		"dataBase":"Devisab",
+		"dataBase":"PruebasDevisab",
 		"rutaDescarga":"\\\\192.168.2.5\\E$\\ARCHIVOS_DESCARGA_PRUEBA",
 		"generarZIP":false
 	},
