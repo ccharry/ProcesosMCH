@@ -2,6 +2,7 @@
 	{
 		"tiempoEjecucionEnMinutos":2
 	},
+	
     {
     	"configuracionGeneral":"si",
     	"protocolo":"http",
@@ -24,7 +25,7 @@
     	"servicioGenerarReporteXlsx":"generarReporte"
     },{
     	"restricciones": "si",
-    	"listaValida":[{"negocio" : "Devisab", correos:["lialruiz@bancolombia.com.co"]},{"negocio": "SanRafael", correos:["marvaneg@bancolombia.com.co", "yvalero@Bancolombia.com.co"]}]
+    	"listaValida":[{"negocio" : "Devisab", correos:["lialruiz@bancolombia.com.co","JECAMACH@bancolombia.com.co"]},{"negocio": "SanRafael", correos:["marvaneg@bancolombia.com.co", "yvalero@Bancolombia.com.co", "japromer@Bancolombia.com.co"]}]
     
     },
 	{
