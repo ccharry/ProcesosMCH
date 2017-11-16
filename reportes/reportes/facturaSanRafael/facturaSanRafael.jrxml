@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="528" leftMargin="56" rightMargin="28" topMargin="56" bottomMargin="28" uuid="850639d6-91c9-47b3-b3cc-5a5763b81c14">
-	<property name="ireport.zoom" value="1.5000000000000007"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="473"/>
+	<property name="ireport.zoom" value="6.265872254123488"/>
+	<property name="ireport.x" value="2658"/>
+	<property name="ireport.y" value="985"/>
 	<parameter name="rutaImagen" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT
@@ -171,7 +171,7 @@ ORDER BY CAST(FACTURA AS NUMERIC)]]>
 				<textElement textAlignment="Right">
 					<font fontName="Arial" size="5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["FECHA: "+$F{FECHAR}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["FECHA: "+$F{FECHAR} +"Vigencia de 12 meses"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="367" y="121" width="131" height="11" uuid="5281af51-e562-41a9-b294-ad633938aac0"/>
